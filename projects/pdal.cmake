@@ -25,10 +25,6 @@ superbuild_add_project(pdal
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib)
 
-superbuild_apply_patch(pdal fix-target-curl
-  "Fix link pdal with curl")
-superbuild_apply_patch(pdal e57-spherical-format-support "Add support for e57 spherical format")
-
 include(CheckIncludeFileCXX)
 
 check_include_file_cxx("filesystem" has_filesystem)

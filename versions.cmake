@@ -334,8 +334,8 @@ superbuild_set_revision(gdal
 
 superbuild_set_revision(pdal
   # https://github.com/PDAL/PDAL/releases
-  URL     "https://www.paraview.org/files/dependencies/PDAL-2.5.6-src.tar.bz2"
-  URL_MD5 728a54d18a4a47bf70dd5d45b26e2882)
+  URL     "https://www.paraview.org/files/dependencies/PDAL-2.9.0-src.tar.bz2"
+  URL_MD5 70aa7d47780d92674586a0e5e2bb7b1b)
 
 superbuild_set_revision(xerces
   # https://github.com/apache/xerces-c/tags
