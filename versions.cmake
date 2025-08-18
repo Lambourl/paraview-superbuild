@@ -436,5 +436,5 @@ superbuild_set_selectable_source(collaborationserver
 
 superbuild_set_revision(openturns
   # https://github.com/openturns/openturns
-  URL     "https://github.com/openturns/openturns/archive/refs/tags/v1.23.tar.gz"
-  URL_MD5 57afb99d462c254bd044a9a622880943)
+  URL     "https://github.com/openturns/openturns/archive/refs/tags/v1.25.tar.gz"
+  URL_MD5 eaf1a857e71c147f4cd85a39b4d719c7)
