@@ -38,3 +38,8 @@ superbuild_add_project(openpmd
 # extracted which trips up later version checks.
 superbuild_apply_patch(openpmd find-python-components
   "request the full Development Python component")
+
+# Apply patch for Container.hpp to fix compile error on XCode 16.4. Code was fixed in
+# OpenPMD 0.16.1 (see https://github.com/openPMD/openPMD-api/commit/3a60e7714f6143c8fc7bf89809f2167d058359ee)
+superbuild_apply_patch(openpmd container-swap
+  "fix container swap function")
