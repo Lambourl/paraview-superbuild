@@ -315,11 +315,11 @@ endif ()
 # viskores tests
 if (viskores_enabled)
   paraview_add_ui_test("vtkm-contour" "VTKmContour"
-    --test-plugin=VTKmFilters)
+    --plugins=VTKmFilters)
   paraview_add_ui_test("vtkm-gradient" "VTKmGradient"
-    --test-plugin=VTKmFilters)
+    --plugins=VTKmFilters)
   paraview_add_ui_test("vtkm-threshold" "VTKmThreshold"
-    --test-plugin=VTKmFilters)
+    --plugins=VTKmFilters)
 endif ()
 
 # Translations test
