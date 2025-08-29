@@ -15,6 +15,7 @@ superbuild_add_project(catalyst
   DEPENDS_OPTIONAL
     mpi
     numpy
+    python3
   LICENSE_FILES
     License.txt
     3rdPartyLicenses.txt
