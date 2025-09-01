@@ -34,6 +34,10 @@ superbuild_add_project(pdal
 
 include(CheckIncludeFileCXX)
 
+if (zlib_enabled)
+  superbuild_apply_patch(pdal zlib-include-dir "Fix zlib include directory")
+endif()
+
 check_include_file_cxx("filesystem" has_filesystem)
 if (NOT has_filesystem)
   check_include_file_cxx("experimental/filesystem" has_experimental_filesystem)
