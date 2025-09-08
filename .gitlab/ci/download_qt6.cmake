@@ -38,7 +38,7 @@ set(qt_addon_directory_for_qtwebview ".addons.qtwebview")
 # Files needed to download.
 set(qt_files)
 if (qt_platform STREQUAL "windows_x86")
-  set(qt_build_stamp "202501171337")
+  set(qt_build_stamp "202503301022")
   set(qt_file_name_prefix "${qt_version}-0-${qt_build_stamp}")
   list(APPEND qt_files
     "qt.qt6.${qt_version_nodot}.${qt_abi}/${qt_file_name_prefix}d3dcompiler_47-x64.7z"
@@ -51,7 +51,7 @@ if (qt_platform STREQUAL "windows_x86")
 
   set(qt_subdir "${qt_version}/clang_64")
 elseif (qt_platform STREQUAL "mac_x64")
-  set(qt_build_stamp "202501171328")
+  set(qt_build_stamp "202503301021")
   set(qt_file_name_prefix "${qt_version}-0-${qt_build_stamp}")
 
   foreach (qt_component IN ITEMS qtbase qtsvg qttools qtmultimedia qt5compat)
@@ -61,7 +61,7 @@ elseif (qt_platform STREQUAL "mac_x64")
 
   set(qt_subdir "${qt_version}/clang_64")
 elseif (qt_platform STREQUAL "linux_x64")
-  set(qt_build_stamp "202501171339")
+  set(qt_build_stamp "202503301022")
   set(qt_file_name_prefix "${qt_version}-0-${qt_build_stamp}")
   list(APPEND qt_files
     "qt.qt6.${qt_version_nodot}${qt_addon_directory_for_${qt_component}}.${qt_abi}/${qt_file_name_prefix}icu-linux-Rhel8.6-x86_64.7z")
