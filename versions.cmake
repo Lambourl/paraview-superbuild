@@ -334,8 +334,8 @@ superbuild_set_revision(gdal
 
 superbuild_set_revision(pdal
   # https://github.com/PDAL/PDAL/releases
-  URL     "https://www.paraview.org/files/dependencies/PDAL-2.5.6-src.tar.bz2"
-  URL_MD5 728a54d18a4a47bf70dd5d45b26e2882)
+  URL     "https://www.paraview.org/files/dependencies/PDAL-2.9.0-src.tar.bz2"
+  URL_MD5 70aa7d47780d92674586a0e5e2bb7b1b)
 
 superbuild_set_revision(xerces
   # https://github.com/apache/xerces-c/tags
@@ -436,5 +436,5 @@ superbuild_set_selectable_source(collaborationserver
 
 superbuild_set_revision(openturns
   # https://github.com/openturns/openturns
-  URL     "https://github.com/openturns/openturns/archive/refs/tags/v1.23.tar.gz"
-  URL_MD5 57afb99d462c254bd044a9a622880943)
+  URL     "https://github.com/openturns/openturns/archive/refs/tags/v1.25.tar.gz"
+  URL_MD5 eaf1a857e71c147f4cd85a39b4d719c7)
