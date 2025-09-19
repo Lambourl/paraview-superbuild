@@ -4,6 +4,12 @@ if (UNIX)
     libxml2)
 endif ()
 
+set(pdal_zlib_include_dir)
+if (zlib_enabled AND NOT USE_SYSTEM_zlib)
+  list(APPEND pdal_zlib_include_dir
+    -DZLIB_INCLUDE_DIR:PATH=<INSTALL_DIR>/include)
+endif ()
+
 superbuild_add_project(pdal
   DEPENDS
     gdal geotiff curl
@@ -23,13 +29,14 @@ superbuild_add_project(pdal
     -DBUILD_PLUGIN_HDF:BOOL=OFF
     -DBUILD_PLUGIN_E57:BOOL=${xerces_enabled}
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
-    -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib)
-
-superbuild_apply_patch(pdal fix-target-curl
-  "Fix link pdal with curl")
-superbuild_apply_patch(pdal e57-spherical-format-support "Add support for e57 spherical format")
+    -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
+    ${pdal_zlib_include_dir})
 
 include(CheckIncludeFileCXX)
+
+if (zlib_enabled)
+  superbuild_apply_patch(pdal zlib-include-dir "Fix zlib include directory")
+endif()
 
 check_include_file_cxx("filesystem" has_filesystem)
 if (NOT has_filesystem)

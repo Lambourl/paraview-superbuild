@@ -1,0 +1,12 @@
+--- src/vendor/spz/CMakeLists.txt	2025-09-01 17:08:13.040700707 -0400
++++ src/vendor/spz/CMakeLists.txt	2025-09-01 16:27:35.673856707 -0400
+@@ -13,5 +13,9 @@
+ PDAL_ADD_FREE_LIBRARY(${PDAL_SPZ_LIB_NAME} STATIC ${SPZ_SRCS})
+
+ set_target_properties(${PDAL_SPZ_LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
++if (PDAL_HAVE_ZLIB)
++  target_link_libraries(${PDAL_SPZ_LIB_NAME} PRIVATE ZLIB::ZLIB)
++  target_include_directories(${PDAL_SPZ_LIB_NAME} PRIVATE ${ZLIB_INCLUDE_DIR})
++endif()
+
+ set_property(GLOBAL PROPERTY _PDAL_SPZ_INCLUDED TRUE)
