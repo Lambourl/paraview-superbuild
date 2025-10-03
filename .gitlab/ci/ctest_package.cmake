@@ -20,6 +20,9 @@ file(GLOB files
   "${CTEST_BINARY_DIRECTORY}/*.tar.*"
   "${CTEST_BINARY_DIRECTORY}/*.zip")
 if (files)
+  # Do not fail if CDash is not responding when uploading these large files.
+  set(CTEST_SUBMIT_INACTIVITY_TIMEOUT 0)
+
   ctest_upload(FILES ${files})
   ctest_submit(PARTS Upload)
 endif()
