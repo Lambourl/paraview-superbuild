@@ -64,7 +64,7 @@ linux-shared:test:
         - .cmake_test_linux
         - .cmake_package_artifacts
         - .linux_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - linux-shared:build
 
@@ -93,7 +93,7 @@ linux-static:test:
         - .fedora38_static
         - .cmake_test_linux
         - .linux_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - linux-static:build
 
@@ -115,7 +115,7 @@ macos-arm64:test:
         - .cmake_test_macos
         - .cmake_package_artifacts
         - .macos_arm64_builder_tags_test
-        - .run_automatically
+        - .rules
     needs:
         - macos-arm64:build
 
@@ -143,7 +143,7 @@ macos-x86_64:test:
         - .cmake_test_macos
         - .cmake_package_artifacts
         - .macos_x86_64_builder_tags_test
-        - .run_automatically
+        - .rules
     needs:
         - macos-x86_64:build
 
@@ -175,7 +175,7 @@ windows-vs2022-mpi:test:
         - .cmake_test_windows
         - .cmake_package_artifacts
         - .windows_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - windows-vs2022-mpi:build
 
@@ -205,7 +205,7 @@ windows-vs2022-nompi:test:
         - .cmake_test_windows
         - .cmake_package_artifacts
         - .windows_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - windows-vs2022-nompi:build
 
