@@ -5,6 +5,14 @@
 ##   PVSB_CI_RUN_MANUALLY
 ##     Set to "true" if the job should be manually triggered in MRs. These jobs
 ##     will also be delayed for branch update pipelines
+##   PVSB_CI_MERGED_ONLY
+##     Set to "true" to make the job only run for merged pipelines.
+##   PVSB_CI_PACKAGE_UPLOAD
+##     Set to "true" to make the job only run when package uploads are
+##     requested.
+## Pipeline variables:
+##   ENABLE_PACKAGE_UPLOAD
+##     Set to "true" when package upload jobs should be performed.
 ####
 
 # When to even consider running a pipeline
@@ -40,6 +48,9 @@ workflow:
 # Generic rules block to apply if the pipeline would be run
 .rules:
     rules:
+        # Merged-only jobs never run on MRs.
+        - if: '$CI_MERGE_REQUEST_ID && $PVSB_CI_MERGED_ONLY == "true"'
+          when: never
         # MRs use manual triggers.
         - if: '$CI_MERGE_REQUEST_ID && $PVSB_CI_RUN_MANUALLY == "true"'
           when: manual
@@ -49,6 +60,9 @@ workflow:
         # Jobs on a tag run right away.
         - if: '$CI_COMMIT_TAG'
           when: on_success
+        # Skip upload jobs without an upload request.
+        - if: '$PVSB_CI_PACKAGE_UPLOAD == "true" && $ENABLE_PACKAGE_UPLOAD != "true"'
+          when: never
         # Jobs on a trigger run right away.
         - if: '$CI_PIPELINE_SOURCE == "pipeline"'
           when: on_success
@@ -58,9 +72,3 @@ workflow:
           start_in: 30 minutes
         # Normal jobs on the project run automatically.
         - when: on_success
-
-.upload_only:
-    rules:
-      - if: '$RSYNC_UPLOAD_ENABLE == "true"'
-        when: on_success
-      - when: never

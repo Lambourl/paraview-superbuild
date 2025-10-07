@@ -73,10 +73,12 @@ linux-shared:test:
 linux-shared:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - linux-shared:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 ## Static build
@@ -128,10 +130,12 @@ macos-arm64:test:
 macos-arm64:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - macos-arm64:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 macos-x86_64:build:
@@ -158,10 +162,12 @@ macos-x86_64:test:
 macos-x86_64:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - macos-x86_64:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 # Windows
@@ -192,10 +198,12 @@ windows-vs2022-mpi:test:
 windows-vs2022-mpi:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - windows-vs2022-mpi:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 ## non-MPI build
@@ -224,8 +232,10 @@ windows-vs2022-nompi:test:
 windows-vs2022-nompi:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - windows-vs2022-nompi:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
