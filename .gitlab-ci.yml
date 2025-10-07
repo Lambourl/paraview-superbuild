@@ -55,7 +55,9 @@ linux-shared:build:
         - .cmake_build_linux
         - .cmake_build_artifacts
         - .linux_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 3 hours
 
 linux-shared:test:
@@ -85,7 +87,9 @@ linux-static:build:
         - .cmake_build_linux
         - .cmake_build_artifacts
         - .linux_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 3 hours
 
 linux-static:test:
@@ -107,7 +111,9 @@ macos-arm64:build:
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_arm64_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
 
 macos-arm64:test:
     extends:
@@ -134,7 +140,9 @@ macos-x86_64:build:
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_x86_64_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 3 hours
 
 macos-x86_64:test:
@@ -166,7 +174,9 @@ windows-vs2022-mpi:build:
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 150 minutes
 
 windows-vs2022-mpi:test:
@@ -196,7 +206,9 @@ windows-vs2022-nompi:build:
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 150 minutes
 
 windows-vs2022-nompi:test:
