@@ -37,7 +37,9 @@ stages:
 #   - a build script
 #   - tags for the jobs
 #     - already provided for upload and CI update jobs
-#   - rules for when to run the job
+#   - the `.rules` block
+#     - see `.gitlab/rules.yml` for variables jobs may set to control when the
+#       job is executed
 #
 # Additionally, jobs may also contain:
 #
@@ -55,7 +57,9 @@ linux-shared:build:
         - .cmake_build_linux
         - .cmake_build_artifacts
         - .linux_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 3 hours
 
 linux-shared:test:
@@ -64,17 +68,19 @@ linux-shared:test:
         - .cmake_test_linux
         - .cmake_package_artifacts
         - .linux_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - linux-shared:build
 
 linux-shared:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - linux-shared:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 ## Static build
@@ -85,7 +91,9 @@ linux-static:build:
         - .cmake_build_linux
         - .cmake_build_artifacts
         - .linux_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 3 hours
 
 linux-static:test:
@@ -93,7 +101,7 @@ linux-static:test:
         - .fedora38_static
         - .cmake_test_linux
         - .linux_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - linux-static:build
 
@@ -107,7 +115,9 @@ macos-arm64:build:
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_arm64_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
 
 macos-arm64:test:
     extends:
@@ -115,17 +125,19 @@ macos-arm64:test:
         - .cmake_test_macos
         - .cmake_package_artifacts
         - .macos_arm64_builder_tags_test
-        - .run_automatically
+        - .rules
     needs:
         - macos-arm64:build
 
 macos-arm64:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - macos-arm64:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 macos-x86_64:build:
@@ -134,7 +146,9 @@ macos-x86_64:build:
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_x86_64_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 3 hours
 
 macos-x86_64:test:
@@ -143,17 +157,19 @@ macos-x86_64:test:
         - .cmake_test_macos
         - .cmake_package_artifacts
         - .macos_x86_64_builder_tags_test
-        - .run_automatically
+        - .rules
     needs:
         - macos-x86_64:build
 
 macos-x86_64:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - macos-x86_64:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 # Windows
@@ -166,7 +182,9 @@ windows-vs2022-mpi:build:
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 150 minutes
 
 windows-vs2022-mpi:test:
@@ -175,17 +193,19 @@ windows-vs2022-mpi:test:
         - .cmake_test_windows
         - .cmake_package_artifacts
         - .windows_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - windows-vs2022-mpi:build
 
 windows-vs2022-mpi:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - windows-vs2022-mpi:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin
 
 ## non-MPI build
@@ -196,7 +216,9 @@ windows-vs2022-nompi:build:
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags
-        - .run_manually
+        - .rules
+    variables:
+        PVSB_CI_RUN_MANUALLY: "true"
     timeout: 150 minutes
 
 windows-vs2022-nompi:test:
@@ -205,15 +227,17 @@ windows-vs2022-nompi:test:
         - .cmake_test_windows
         - .cmake_package_artifacts
         - .windows_test_tags
-        - .run_automatically
+        - .rules
     needs:
         - windows-vs2022-nompi:build
 
 windows-vs2022-nompi:upload:
     extends:
         - .rsync_upload
-        - .upload_only
+        - .rules
     needs:
         - windows-vs2022-nompi:test
     variables:
+        PVSB_CI_MERGED_ONLY: "true"
+        PVSB_CI_PACKAGE_UPLOAD: "true"
         RSYNC_DESTINATION: paraview_nightly_bin

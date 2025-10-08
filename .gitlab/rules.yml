@@ -1,30 +1,74 @@
 # Rules for where jobs can run
 
-.run_automatically:
+###
+## Job variables:
+##   PVSB_CI_RUN_MANUALLY
+##     Set to "true" if the job should be manually triggered in MRs. These jobs
+##     will also be delayed for branch update pipelines
+##   PVSB_CI_MERGED_ONLY
+##     Set to "true" to make the job only run for merged pipelines.
+##   PVSB_CI_PACKAGE_UPLOAD
+##     Set to "true" to make the job only run when package uploads are
+##     requested.
+## Pipeline variables:
+##   ENABLE_PACKAGE_UPLOAD
+##     Set to "true" when package upload jobs should be performed.
+####
+
+# When to even consider running a pipeline
+workflow:
     rules:
+        # Run for merge requests.
         - if: '$CI_MERGE_REQUEST_ID'
-          when: on_success
-        - if: '$CI_PROJECT_PATH == "paraview/paraview-superbuild"'
-          when: on_success
+          when: always
+          auto_cancel:
+              # Cancel all pipeline jobs if a new commit comes in on the branch/tag.
+              on_new_commit: interruptible
+        # If this is not a MR, do not run for other projects.
+        - if: '$CI_PROJECT_PATH != "paraview/paraview-superbuild"'
+          when: never
+        # Run for schedules.
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
+          when: always
+          auto_cancel:
+              # Never cancel scheduled pipelines because of new commits
+              on_new_commit: none
+        # Run for protected branches.
+        - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+          when: always
+          auto_cancel:
+              # Cancel all pipeline jobs if a new commit comes in on the branch.
+              on_new_commit: interruptible
+        # Run for tags.
+        - if: '$CI_COMMIT_TAG'
+          when: always
+        # Skip pipelines in all other cases
         - when: never
 
-.run_manually:
+# Generic rules block to apply if the pipeline would be run
+.rules:
     rules:
-        - if: '$CI_MERGE_REQUEST_ID'
+        # Merged-only jobs never run on MRs.
+        - if: '$CI_MERGE_REQUEST_ID && $PVSB_CI_MERGED_ONLY == "true"'
+          when: never
+        # MRs use manual triggers.
+        - if: '$CI_MERGE_REQUEST_ID && $PVSB_CI_RUN_MANUALLY == "true"'
           when: manual
-        - if: '$CI_PROJECT_PATH == "paraview/paraview-superbuild"'
+        # Normal jobs run automatically.
+        - if: '$CI_MERGE_REQUEST_ID'
+          when: on_success
+        # Jobs on a tag run right away.
+        - if: '$CI_COMMIT_TAG'
+          when: on_success
+        # Skip upload jobs without an upload request.
+        - if: '$PVSB_CI_PACKAGE_UPLOAD == "true" && $ENABLE_PACKAGE_UPLOAD != "true"'
+          when: never
+        # Jobs on a trigger run right away.
+        - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+          when: on_success
+        # Manual jobs run delayed (e.g., merges to branches).
+        - if: '$PVSB_CI_RUN_MANUALLY == "true"'
           when: delayed
           start_in: 30 minutes
-        - when: never
-
-.merged_only:
-    rules:
-        - if: '$CI_PROJECT_PATH == "paraview/paraview-superbuild"'
-          when: on_success
-        - when: never
-
-.upload_only:
-    rules:
-      - if: '$RSYNC_UPLOAD_ENABLE == "true"'
-        when: on_success
-      - when: never
+        # Normal jobs on the project run automatically.
+        - when: on_success
