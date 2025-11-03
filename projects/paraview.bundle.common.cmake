@@ -73,7 +73,8 @@ endif ()
 set(other_executables)
 if (vrpn_enabled)
   list(APPEND other_executables
-    vrpn_server)
+    vrpn_server
+    vrpn_print_devices)
 endif()
 
 if (collaborationserver_enabled)
@@ -359,6 +360,15 @@ function (paraview_install_bivariate_textures)
     COMPONENT "superbuild")
 endfunction ()
 
+function (paraview_install_vrpn_config)
+  if (vrpn_enabled)
+    install(
+      FILES   "${superbuild_install_location}/bin/vrpn.cfg"
+      DESTINATION "bin/"
+      COMPONENT   superbuild)
+  endif ()
+endfunction ()
+
 function (paraview_install_paraview_modules_spdx_files)
   if (EXISTS "${superbuild_install_location}/share/doc/ParaView/spdx")
     install(
@@ -526,6 +536,7 @@ function (paraview_install_extra_data)
   paraview_install_xr_manifests()
   paraview_install_openxr_models()
   paraview_install_bivariate_textures()
+  paraview_install_vrpn_config()
 endfunction ()
 
 if (qt5_enabled AND (NOT USE_SYSTEM_qt5 OR PACKAGE_SYSTEM_QT))
