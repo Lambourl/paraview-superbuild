@@ -27,11 +27,11 @@ workflow:
         # If this is not a MR, do not run for other projects.
         - if: '$CI_PROJECT_PATH != "paraview/paraview-superbuild"'
           when: never
-        # Run for schedules.
-        - if: '$CI_PIPELINE_SOURCE == "schedule"'
+        # Run for schedules and triggers.
+        - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "trigger"'
           when: always
           auto_cancel:
-              # Never cancel scheduled pipelines because of new commits
+              # Never cancel scheduled/triggered pipelines because of new commits
               on_new_commit: none
         # Run for protected branches.
         - if: '$CI_COMMIT_REF_PROTECTED == "true"'
