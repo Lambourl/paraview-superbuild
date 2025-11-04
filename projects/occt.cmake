@@ -1,14 +1,7 @@
 # Build OpenCascade Core Technology
 # This is newer than the oce project (which is used by CGM).
 
-# fontconfig only required on linux
-set(occt_fontconfig_dep)
-if (UNIX AND NOT APPLE)
-  set(occt_fontconfig_dep fontconfig)
-endif ()
-
 superbuild_add_project(occt
-  DEPENDS freetype ${occt_fontconfig_dep}
   DEPENDS_OPTIONAL cxx11
   LICENSE_FILES
     LICENSE_LGPL_21.txt
@@ -21,8 +14,6 @@ superbuild_add_project(occt
     "Copyright (c) 1999-2023 OPEN CASCADE SAS"
   CMAKE_ARGS
     -DCMAKE_INSTALL_RPATH:PATH=$ORIGIN/../lib
-    -D3RDPARTY_FREETYPE_DIR:PATH=<INSTALL_DIR>
-    -D3RDPARTY_Fontconfig_INCLUDE_DIR:PATH=<INSTALL_DIR>/include
     # Do not build Draw or Visualization modules as they require tcl/tk.
     -DBUILD_MODULE_Draw:BOOL=FALSE
     -DBUILD_MODULE_Visualization:BOOL=FALSE
@@ -39,10 +30,9 @@ superbuild_add_project(occt
     -DINSTALL_TCL:BOOL=OFF
     -DINSTALL_TEST_CASES:BOOL=OFF
     -DINSTALL_TK:BOOL=OFF
+    -DUSE_FREETYPE:BOOL=OFF
+    -DUSE_XLIB:BOOL=OFF
 )
-
-superbuild_apply_patch(occt find-fontconfig
-  "Use the superbuild's fontconfig")
 
 # TODO The occt build system moves dlls on windows, appending "i" for RelWithDebInfo,
 # and "d" for Debug builds. Need a post-install step that moves those dlls to "bin".
