@@ -1,5 +1,7 @@
 # Build OpenCascade Core Technology
 # This is newer than the oce project (which is used by CGM).
+set(occt_toolkits TKDESTEP TKDEIGES TKMesh TKBinXCAF)
+list(JOIN occt_toolkits "${_superbuild_list_separator}" occt_toolkits_escaped)
 
 superbuild_add_project(occt
   DEPENDS_OPTIONAL cxx11
@@ -14,9 +16,17 @@ superbuild_add_project(occt
     "Copyright (c) 1999-2023 OPEN CASCADE SAS"
   CMAKE_ARGS
     -DCMAKE_INSTALL_RPATH:PATH=$ORIGIN/../lib
-    # Do not build Draw or Visualization modules as they require tcl/tk.
-    -DBUILD_MODULE_Draw:BOOL=FALSE
-    -DBUILD_MODULE_Visualization:BOOL=FALSE
+    # Do not build any multi modules
+    -DBUILD_MODULE_ApplicationFramework:BOOL=OFF
+    -DBUILD_MODULE_DETools:BOOL=OFF
+    -DBUILD_MODULE_DataExchange:BOOL=OFF
+    -DBUILD_MODULE_Draw:BOOL=OFF
+    -DBUILD_MODULE_FoundationClasses:BOOL=OFF
+    -DBUILD_MODULE_ModelingAlgorithms:BOOL=OFF
+    -DBUILD_MODULE_ModelingData:BOOL=OFF
+    -DBUILD_MODULE_Visualization:BOOL=OFF
+    # Build only the needed toolkits instead
+    -DBUILD_ADDITIONAL_TOOLKITS:STRING=${occt_toolkits_escaped}
     # Do not build docs or examples:
     -DBUILD_DOC_Overview:BOOL=OFF
     -DBUILD_SAMPLES_QT:BOOL=OFF
