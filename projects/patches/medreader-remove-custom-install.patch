@@ -9,8 +9,8 @@ Subject: [PATCH] remove-custom-install
 
 diff --git a/src/Plugins/MEDReader/plugin/ParaViewPlugin/CMakeLists.txt b/src/Plugins/MEDReader/plugin/ParaViewPlugin/CMakeLists.txt
 index 89fbd89..5fdad30 100644
---- a/src/Plugins/MEDReader/plugin/ParaViewPlugin/CMakeLists.txt
-+++ b/src/Plugins/MEDReader/plugin/ParaViewPlugin/CMakeLists.txt
+--- a/plugin/ParaViewPlugin/CMakeLists.txt
++++ b/plugin/ParaViewPlugin/CMakeLists.txt
 @@ -118,9 +118,3 @@ paraview_add_plugin(MEDReader
    MODULES MEDReaderIO
    MODULE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/../MEDReaderIO/vtk.module"

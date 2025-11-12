@@ -9,8 +9,8 @@ Subject: [PATCH] Fix MEDLoaderForPV install dirs
 
 diff --git a/src/Plugins/MEDReader/plugin/MEDLoaderForPV/CMakeLists.txt b/src/Plugins/MEDReader/plugin/MEDLoaderForPV/CMakeLists.txt
 index 6da516b9..e928dcf8 100644
---- a/src/Plugins/MEDReader/plugin/MEDLoaderForPV/CMakeLists.txt
-+++ b/src/Plugins/MEDReader/plugin/MEDLoaderForPV/CMakeLists.txt
+--- a/plugin/MEDLoaderForPV/CMakeLists.txt
++++ b/plugin/MEDLoaderForPV/CMakeLists.txt
 @@ -28,5 +28,7 @@ ELSE(MEDREADER_USE_MPI)
    TARGET_LINK_LIBRARIES(MEDLoaderForPV ${MEDCoupling_medloader})
  ENDIF(MEDREADER_USE_MPI)

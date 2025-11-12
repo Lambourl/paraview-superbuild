@@ -20,6 +20,7 @@ superbuild_add_project(medfile
    -DMEDFILE_INSTALL_DOC:BOOL=OFF
    -DMEDFILE_BUILD_TESTS:BOOL=OFF
    -DMEDFILE_USE_MPI:BOOL=${mpi_enabled}
+   -DMED_MEDINT_TYPE:STRING=int
    ${medfile_options}
 )
 
@@ -31,6 +32,3 @@ superbuild_apply_patch(medfile fix-install-dirs
 
 superbuild_apply_patch(medfile no-fortran
   "Disable CMake fortran logic")
-
-superbuild_apply_patch(medfile hdf-1.14-compat
-  "Support HDF5 1.14")

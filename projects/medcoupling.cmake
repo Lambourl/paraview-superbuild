@@ -28,11 +28,14 @@ superbuild_add_project(medcoupling
    ${medcoupling_options}
 )
 
-superbuild_apply_patch(medcoupling fix-cmake-option-usage
-  "Fix incorrect usage of cmake dependent option")
-
 superbuild_apply_patch(medcoupling static-para-libs-windows-fix
   "Build para libs statically for Windows compatibility")
 
 superbuild_apply_patch(medcoupling fix-install-directories
   "Fix install directories")
+
+superbuild_apply_patch(medcoupling fix-med_int-usage
+  "Fix incorrect usage of med_int")
+
+superbuild_apply_patch(medcoupling fix-mpi-array-alloc
+  "Fix incorrect allocation")
