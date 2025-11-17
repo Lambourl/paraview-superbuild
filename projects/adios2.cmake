@@ -17,7 +17,7 @@ endif()
 superbuild_add_project(adios2
   CAN_USE_SYSTEM
   DEPENDS
-    cxx11 ${adios2_extra_deps}
+    cxx14 ${adios2_extra_deps}
     # currently adios 2.6 unconditionally needs Python
     # even if Python wrapping is disabled.
     python3
@@ -55,5 +55,3 @@ superbuild_add_project(adios2
     -DADIOS2_USE_ZeroMQ:STRING=OFF
     -DEVPATH_TRANSPORT_MODULES:BOOL=OFF
     ${adios2_extra_args})
-
-superbuild_apply_patch(adios2 update-thirdparty-libs "Fix issue with perl")
