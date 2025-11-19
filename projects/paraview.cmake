@@ -97,7 +97,7 @@ if (expat_enabled)
   list(APPEND paraview_platform_dependencies expat)
 endif ()
 
-if (APPLE OR WIN32)
+if (USE_NONFREE_COMPONENTS AND APPLE OR WIN32)
   list(APPEND paraview_platform_dependencies
     threedxwaresdk)
 endif ()
