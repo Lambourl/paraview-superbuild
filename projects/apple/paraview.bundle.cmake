@@ -116,6 +116,7 @@ superbuild_apple_create_app(
   "${paraview_appname}"
   "${superbuild_install_location}/Applications/paraview.app/Contents/MacOS/paraview"
   CLEAN
+  USE_RPATHS
   PLUGINS ${paraview_plugin_paths}
   PLUGIN_SUBDIRS
   SEARCH_DIRECTORIES "${superbuild_install_location}/lib"
@@ -213,6 +214,7 @@ foreach (executable IN LISTS paraview_executables other_executables)
     "\${CMAKE_INSTALL_PREFIX}"
     "${paraview_appname}"
     "${superbuild_install_location}/bin/${executable}"
+    USE_RPATHS
     SEARCH_DIRECTORIES "${superbuild_install_location}/lib"
     INCLUDE_REGEXES     ${include_regexes}
     IGNORE_REGEXES      ${ignore_regexes})
@@ -238,6 +240,7 @@ if (python3_enabled)
   superbuild_apple_install_python(
     "\${CMAKE_INSTALL_PREFIX}"
     "${paraview_appname}"
+    USE_RPATHS
     MODULES ${python_modules}
     MODULE_DIRECTORIES
             "${superbuild_install_location}/Applications/paraview.app/Contents/Python"
@@ -265,6 +268,7 @@ if (mpi_built_by_superbuild)
       "\${CMAKE_INSTALL_PREFIX}"
       "${paraview_appname}"
       "${superbuild_install_location}/bin/${mpi_executable}"
+      USE_RPATHS
       SEARCH_DIRECTORIES "${superbuild_install_location}/lib"
       INCLUDE_REGEXES     ${include_regexes}
       IGNORE_REGEXES      ${ignore_regexes})
@@ -311,6 +315,7 @@ foreach (qt5_plugin_path IN LISTS qt5_plugin_paths)
     "${paraview_appname}"
     "${qt5_plugin_path}"
     "Contents/Plugins/${qt5_plugin_group}"
+    USE_RPATHS
     SEARCH_DIRECTORIES  "${superbuild_install_location}/lib"
     INCLUDE_REGEXES     ${include_regexes}
     IGNORE_REGEXES      ${ignore_regexes})
@@ -325,10 +330,34 @@ foreach (qt6_plugin_path IN LISTS qt6_plugin_paths)
     "${paraview_appname}"
     "${qt6_plugin_path}"
     "Contents/Plugins/${qt6_plugin_group}"
+    USE_RPATHS
     SEARCH_DIRECTORIES  "${superbuild_install_location}/lib"
     INCLUDE_REGEXES     ${include_regexes}
     IGNORE_REGEXES      ${ignore_regexes})
 endforeach ()
+
+if (catalyst_enabled)
+  # When using external catalyst, only bundle libcatalyst-paraview.so
+  # The stub adaptor comes from the system catalyst installation
+  set(adaptors "paraview")
+
+  # When catalyst is built internally, also bundle the stub
+  if (NOT USE_SYSTEM_catalyst)
+    list(APPEND adaptors "stub")
+  endif ()
+
+  foreach (adaptor IN LISTS adaptors)
+    superbuild_apple_install_module(
+      "\${CMAKE_INSTALL_PREFIX}"
+      "${paraview_appname}"
+      "${superbuild_install_location}/lib/catalyst/libcatalyst-${adaptor}.so"
+      "Contents/Libraries/catalyst"
+      USE_RPATHS
+      SEARCH_DIRECTORIES  "${superbuild_install_location}/lib"
+      INCLUDE_REGEXES ${include_regexes}
+      EXCLUDE_REGEXES ${exclude_regexes})
+  endforeach ()
+endif ()
 
 paraview_install_extra_data()
 
