@@ -433,5 +433,5 @@ superbuild_set_selectable_source(collaborationserver
 
 superbuild_set_revision(openturns
   # https://github.com/openturns/openturns
-  URL     "https://github.com/openturns/openturns/archive/refs/tags/v1.25.tar.gz"
+  URL     "https://www.paraview.org/files/dependencies/openturns-1.25.tar.gz"
   URL_MD5 eaf1a857e71c147f4cd85a39b4d719c7)
