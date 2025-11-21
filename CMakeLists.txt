@@ -95,6 +95,7 @@ function (superbuild_find_projects var)
     ospray
     ospraymodulempi
     openturns
+    openusd
     openxrmodels
     openxrsdk
     paraviewtranslations

@@ -365,6 +365,11 @@ superbuild_set_revision(h5py
   URL     "https://www.paraview.org/files/dependencies/h5py-3.9.0.tar.gz"
   URL_MD5 "138d72aa1324c28a37842bc99467dfba")
 
+superbuild_set_revision(openusd
+  # https://github.com/PixarAnimationStudios/OpenUSD/archive/refs/tags/v25.11.tar.gz
+  URL     "https://www.paraview.org/files/dependencies/openusd-25.11.tar.gz"
+  URL_MD5 c5d35692ad9809cad046037f1512b1b4)
+
 superbuild_set_revision(openvdb
   # https://github.com/AcademySoftwareFoundation/openvdb/releases
   URL "https://www.paraview.org/files/dependencies/openvdb-10.0.1.tar.gz"
