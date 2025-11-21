@@ -1,0 +1,22 @@
+diff --git a/src/ParaMEDMEM/ByStringMPIProcessorGroup.cxx b/src/ParaMEDMEM/ByStringMPIProcessorGroup.cxx
+index de5afac..aa2255f 100644
+--- a/src/ParaMEDMEM/ByStringMPIProcessorGroup.cxx
++++ b/src/ParaMEDMEM/ByStringMPIProcessorGroup.cxx
+@@ -64,7 +64,7 @@ DefineSetIdByStringName(const CommInterface &interface, const std::string &simCo
+     for (size_t rank = 1; rank < words_size.size(); rank++)
+         displacement[rank] = words_size[rank - 1] + displacement[rank - 1];
+ 
+-    char globalnames[displacement[size_world - 1]];
++    char* globalnames = new char[displacement[size_world - 1]];
+ 
+     interface.allGatherV(
+         simCodeTag.c_str(),
+@@ -82,6 +82,8 @@ DefineSetIdByStringName(const CommInterface &interface, const std::string &simCo
+         std::string strByRank(&globalnames[displacement[rank]], words_size[rank]);
+         myRanksSet[strByRank].insert((int)rank);
+     }
++
++    delete[] globalnames;
+     return myRanksSet;
+ }
+ 

@@ -390,34 +390,31 @@ superbuild_set_revision(occt
   URL_MD5 fb6e410bef4cfeb3fc3374042babf88b)
 
 superbuild_set_revision(medfile
-  # Fill out this form: https://www.salome-platform.org/?page_id=2430
-  URL           "https://www.paraview.org/files/dependencies/med-5.0.0.tar.bz2"
-  DOWNLOAD_NAME medfile-5.0.0.tar.bz2
-  URL_MD5       3c5ae8a37d7971658870b77caad1d73b)
+  # From: https://www.salome-platform.org/?page_id=2768
+  URL           "https://www.paraview.org/files/dependencies/med-6.0.1.tar.gz"
+  DOWNLOAD_NAME medfile-6.0.1.tar.gz
+  URL_MD5       7512bd62d74d36cba4655ff879002954)
 
 superbuild_set_revision(medcoupling
-  # https://git.salome-platform.org/gitweb/?p=tools/medcoupling.git;a=summary, pick the tag you want,
-  # click on snapshot to download an archive.
-  # Current:  06f4a5b378e649182161d639b3a05ead43eba660 / medcoupling-06f4a5b.tar.gz
-  URL           "https://www.paraview.org/files/dependencies/medcoupling-06f4a5b.tar.gz"
-  DOWNLOAD_NAME medcoupling-06f4a5b.tar.gz
-  URL_MD5       002e769ffbfe5c4b93c7d931d1b82a1a)
+  # http://github.com/SalomePlatform/medcoupling/archive/$hash.tar.gz, set to the hash/tag you want,
+  # Current:  f7eeee0d2c5c6c18231df54b983588ecd7be5a34
+  URL           "https://www.paraview.org/files/dependencies/medcoupling-f7eeee0d2c5c6c18231df54b983588ecd7be5a34.tar.gz"
+  DOWNLOAD_NAME medcoupling.tar.gz
+  URL_MD5       71948e78f307a8a127059c5b908a8827)
 
 superbuild_set_revision(medconfiguration
-  # https://git.salome-platform.org/gitweb/?p=tools/configuration.git;a=summary, pick the tag you want,
-  # click on snapshot to download an archive.
-  # Current: V9_10_0 / configuration-25f724f.tar.gz
-  URL           "https://www.paraview.org/files/dependencies/configuration-27b2639.tar.gz"
-  DOWNLOAD_NAME medconfiguration-27b2639.tar.gz
-  URL_MD5       98670c18d604af55b67a4f7f3d38b7c4)
+  # http://github.com/SalomePlatform/configuration/archive/$hash.tar.gz, set to the hash/tag you want,
+  # Current: c4188f2e162d5efc14de3964dadfbca748903bf9
+  URL           "https://www.paraview.org/files/dependencies/configuration-c4188f2e162d5efc14de3964dadfbca748903bf9.tar.gz"
+  DOWNLOAD_NAME medconfiguration.tar.gz
+  URL_MD5       9cee5e60df5277ea438fc7bd686a4575)
 
 superbuild_set_revision(medreader
-  # https://git.salome-platform.org/gitweb/?p=modules/paravis.git;a=summary, pick the tag you want,
-  # click on snapshot to download an archive.
-  # Current: 10af7126b07b636a9fdb7c9d879e6390998c7da4 / paravis-10af712.tar.gz
-  URL           "https://www.paraview.org/files/dependencies/paravis-10af712.tar.gz"
-  DOWNLOAD_NAME paravis-10af712.tar.gz
-  URL_MD5       75234547c6fee0188720394450a6f861)
+  # http://github.com/SalomePlatform/medreader/archive/$hash.tar.gz, set to the hash/tag you want,
+  # Current: 904c7524301095cc05d101255a5d3819a5ce50da
+  URL           "https://www.paraview.org/files/dependencies/medreader-904c7524301095cc05d101255a5d3819a5ce50da.tar.gz"
+  DOWNLOAD_NAME medreader.tar.gz
+  URL_MD5       ed01a0ab0d55630f6b7b157eb2097465)
 
 superbuild_set_revision(openxrremoting
   # https://www.nuget.org/packages/Microsoft.Holographic.Remoting.OpenXr/

@@ -1,9 +1,8 @@
-diff -u -Nr -U5 med-5.0.0/CMakeLists.txt med-5.0.0.no-fortran/CMakeLists.txt
---- med-5.0.0/CMakeLists.txt	2023-06-06 10:58:35.000000000 -0400
-+++ med-5.0.0.no-fortran/CMakeLists.txt	2023-09-06 08:45:02.844736415 -0400
-@@ -5,16 +5,17 @@
- ## the OPTIONAL is not considered.
- ## See http://www.cmake.org/Bug/view.php?id=10227
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8c5139d..3fce7fd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,12 +7,13 @@ PROJECT(MEDFile C CXX)
  #ENABLE_LANGUAGE(Fortran OPTIONAL)
  
  INCLUDE(CheckLanguage)
@@ -18,6 +17,17 @@ diff -u -Nr -U5 med-5.0.0/CMakeLists.txt med-5.0.0.no-fortran/CMakeLists.txt
 +set(CMAKE_Fortran_COMPILER_WORKS 0)
  
  ## Version number 
- SET(MED_NUM_MAJEUR  5)
- SET(MED_NUM_MINEUR  0)
- SET(MED_NUM_RELEASE 0)
+ SET(MED_NUM_MAJEUR  6)
+diff --git a/config/cmake_files/medMacros.cmake b/config/cmake_files/medMacros.cmake
+index ed4582f..1f9ef05 100644
+--- a/config/cmake_files/medMacros.cmake
++++ b/config/cmake_files/medMacros.cmake
+@@ -212,7 +212,7 @@ IF(_med_medint_type_is_set AND (NOT CMAKE_Fortran_COMPILER_SUPPORTS_F90) )
+   SET(LONG_OR_INT ${MED_MEDINT_TYPE})
+ ENDIF()
+ 
+-IF(_med_medint_type_is_set AND CMAKE_Fortran_COMPILER_SUPPORTS_F90 )
++IF(_med_medint_type_is_set AND CMAKE_Fortran_COMPILER_SUPPORTS_F90 AND FALSE)
+   CHECK_FORTRAN_INTEGER_SIZE()
+   IF( NOT ${SIZEOF_MEDINT_TYPE} EQUAL ${SIZEOF_FORTRAN_INTEGER} )
+     MESSAGE(FATAL_ERROR "The MED_MEDINT_TYPE definition must be coherent with the default fortran integer. \
