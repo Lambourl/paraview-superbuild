@@ -17,3 +17,6 @@ superbuild_add_project(openusd
     -DPXR_ENABLE_PYTHON_SUPPORT:BOOL=OFF
     -DPXR_INSTALL_LOCATION:STRING=../lib/usd
 )
+
+# Upstream issue for Windows DLL installation location: https://github.com/PixarAnimationStudios/OpenUSD/issues/2490
+superbuild_apply_patch(openusd exported-targets "Add namespace to exported targets and fix Windows DLL installation destinations")
