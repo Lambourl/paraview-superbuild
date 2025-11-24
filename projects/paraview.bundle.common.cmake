@@ -587,7 +587,7 @@ else ()
   set(qt5_plugin_paths)
 endif ()
 
-if (qt6_enabled AND (NOT USE_SYSTEM_qt6 OR PACKAGE_SYSTEM_QT))
+if (qt6_enabled)
   include(qt6.functions)
 
   set(qt6_plugin_prefix)
