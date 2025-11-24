@@ -1,5 +1,3 @@
-set(qt5_SKIP_PCH "ON" CACHE BOOL "")
-
 if ("$ENV{CI_JOB_NAME}" MATCHES "windows")
   set(CMAKE_C_COMPILER_LAUNCHER "buildcache" CACHE STRING "")
   set(CMAKE_CXX_COMPILER_LAUNCHER "buildcache" CACHE STRING "")
