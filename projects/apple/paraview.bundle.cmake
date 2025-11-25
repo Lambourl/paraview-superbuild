@@ -1,4 +1,5 @@
 include(paraview-appname)
+set(paraview_bin_dir "${paraview_appname}/Contents/bin")
 set(paraview_doc_dir "${paraview_appname}/Contents/doc")
 set(paraview_data_dir "${paraview_appname}/Contents/examples")
 set(paraview_translations_dir "${paraview_appname}/Contents/translations")

@@ -364,7 +364,7 @@ function (paraview_install_vrpn_config)
   if (vrpn_enabled)
     install(
       FILES   "${superbuild_install_location}/bin/vrpn.cfg"
-      DESTINATION "bin/"
+      DESTINATION "${paraview_bin_dir}"
       COMPONENT   superbuild)
   endif ()
 endfunction ()

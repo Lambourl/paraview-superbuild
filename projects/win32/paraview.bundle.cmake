@@ -1,5 +1,6 @@
 include(paraview-version)
 
+set(paraview_bin_dir "bin")
 set(paraview_doc_dir "doc")
 set(paraview_data_dir "examples")
 set(paraview_translations_dir "translations")
