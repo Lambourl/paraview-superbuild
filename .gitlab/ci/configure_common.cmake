@@ -86,9 +86,6 @@ set(ENABLE_paraviewsdk              OFF CACHE BOOL "")
 # needs cuda
 set(ENABLE_visrtx                   OFF CACHE BOOL "")
 
-# qt5 things
-set(qt5_SOURCE_SELECTION            "5.15" CACHE STRING "")
-
 # output suppressions
 suppress_project(boost)
 suppress_project(bzip2)

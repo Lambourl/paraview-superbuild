@@ -341,12 +341,14 @@ function (superbuild_add_packaging)
   endif ()
   list(GET generators 0 default_generator)
 
-  set(default_qt_package_system OFF)
-  if (APPLE OR WIN32 OR qt6_enabled)
-    set(default_qt_package_system ON)
-  endif()
-  option(PACKAGE_SYSTEM_QT "With USE_SYSTEM_Qt5, package the system Qt during packaging step" "${default_qt_package_system}")
-  mark_as_advanced(PACKAGE_SYSTEM_QT)
+  if (qt5_enabled)
+    set(default_qt_package_system OFF)
+    if (APPLE OR WIN32)
+      set(default_qt_package_system ON)
+    endif()
+    option(PACKAGE_SYSTEM_QT "With USE_SYSTEM_Qt5, package the system Qt during packaging step" "${default_qt_package_system}")
+    mark_as_advanced(PACKAGE_SYSTEM_QT)
+  endif ()
 
   list(APPEND superbuild_export_variables
     paraview_always_package_scipy
