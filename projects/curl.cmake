@@ -18,3 +18,7 @@ superbuild_add_project(curl
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
     -DCURL_USE_OPENSSL:BOOL=${openssl_enabled}
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS})
+
+# https://github.com/curl/curl/commit/619307feb09fb48feb9a24bbe5655dfcc8f17a3a
+superbuild_apply_patch(curl fix-building-docs-with-dot3-in-base-dir
+  "Fix building docs when the base directory contains .3")
