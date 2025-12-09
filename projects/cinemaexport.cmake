@@ -13,3 +13,7 @@ superbuild_add_project(cinemaexport
     -DCMAKE_INSTALL_RPATH:STRING=<INSTALL_DIR>/lib
     -DUSE_EMBREE3:BOOL=ON
   )
+
+# https://github.com/cinemascience/cinema-paraview-plugin/pull/7
+superbuild_apply_patch(cinemaexport iostream
+  "Fix iostream `using` bits")

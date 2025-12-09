@@ -1,0 +1,51 @@
+From afdd0d13652ae098ce4a8253cf96b0f2ac33f9ef Mon Sep 17 00:00:00 2001
+From: Louis Gombert <louis.gombert@kitware.com>
+Date: Mon, 8 Dec 2025 11:41:34 +0100
+Subject: [PATCH 1/2] CinemaAlgorithm: fix iostream namespace and include
+
+---
+ src/CinemaAlgorithm/CinemaAlgorithm.cxx | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/CinemaAlgorithm/CinemaAlgorithm.cxx b/src/CinemaAlgorithm/CinemaAlgorithm.cxx
+index f1d5924..1996432 100644
+--- a/src/CinemaAlgorithm/CinemaAlgorithm.cxx
++++ b/src/CinemaAlgorithm/CinemaAlgorithm.cxx
+@@ -16,6 +16,9 @@
+ 
+ // Pass input type information key
+ #include <vtkInformationKey.h>
++
++#include <iostream>
++
+ vtkInformationKeyMacro(CinemaAlgorithm, SAME_DATA_TYPE_AS_INPUT_PORT, Integer);
+ 
+ // Constructor / Destructor
+@@ -171,7 +174,7 @@ int CinemaAlgorithm::ProcessRequest(vtkInformation *request,
+     return this->RequestData(request, inputVector, outputVector);
+   }
+ 
+-  request->Print(cout);
++  request->Print(std::cout);
+ 
+   return 0;
+ };
+
+From 3c3227373e31222468af09a2f967d995b7c4f1d0 Mon Sep 17 00:00:00 2001
+From: Louis Gombert <louis.gombert@kitware.com>
+Date: Mon, 8 Dec 2025 11:59:44 +0100
+Subject: [PATCH 2/2] Add missing VTK::IOImage for vtkPNGWriter
+
+---
+ src/CinemaWriter/vtk.module | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/CinemaWriter/vtk.module b/src/CinemaWriter/vtk.module
+index 697f967..f18af15 100644
+--- a/src/CinemaWriter/vtk.module
++++ b/src/CinemaWriter/vtk.module
+@@ -7,3 +7,4 @@ PRIVATE_DEPENDS
+   VTK::CommonCore
+   VTK::CommonSystem
+   VTK::hdf5
++  VTK::IOImage
