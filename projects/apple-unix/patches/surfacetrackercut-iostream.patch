@@ -1,0 +1,118 @@
+From 01d12b4a1e141d9b9829ce62c59fc970481f867c Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Tue, 9 Dec 2025 15:30:23 -0500
+Subject: [PATCH] iostream: use `std::{cerr,cout,endl}`
+
+VTK removed the `using` from its headers. Use the namespace explicitly.
+---
+ SurfaceTrackerCut/Plugin/Filter/surfaceCut.cxx     | 7 +++----
+ SurfaceTrackerCut/Plugin/Filter/vtkCurvatures1.cxx | 6 +++---
+ SurfaceTrackerCut/Plugin/Filter/vtkMyDGGP.cxx      | 9 ++++-----
+ 3 files changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/SurfaceTrackerCut/Plugin/Filter/surfaceCut.cxx b/SurfaceTrackerCut/Plugin/Filter/surfaceCut.cxx
+index 8536427..7c9102d 100644
+--- a/SurfaceTrackerCut/Plugin/Filter/surfaceCut.cxx
++++ b/SurfaceTrackerCut/Plugin/Filter/surfaceCut.cxx
+@@ -18,7 +18,6 @@
+ #include <iostream>
+ 
+ using std::vector;
+-using std::cout;
+ 
+ vtkStandardNewMacro(surfaceCut);
+ 
+@@ -97,7 +96,7 @@ int surfaceCut::RequestData(vtkInformation* vtkNotUsed(request),
+         sel->GetPointData()->GetArray("vtkOriginalPointIds"));
+ 
+     if (selIds == NULL) {
+-        cerr << "ERROR: Need to select at least one inside point." << endl;
++        std::cerr << "ERROR: Need to select at least one inside point." << std::endl;
+         vtkErrorMacro(<< "ERROR: Need to select at least one inside point.");
+         return 0;
+     }
+@@ -108,7 +107,7 @@ int surfaceCut::RequestData(vtkInformation* vtkNotUsed(request),
+         line->GetPointData()->GetArray("vtkOriginalPointIds"));
+ 
+     if (origIds == NULL) {
+-        cerr << "ERROR: Loop does not contain any points." << endl;
++        std::cerr << "ERROR: Loop does not contain any points." << std::endl;
+         vtkErrorMacro(<< "ERROR: Loop does not contain any points.");
+         return 0;
+     }
+@@ -275,5 +274,5 @@ void surfaceCut::BuildAdjacency(vtkDataSet *inData)
+ void surfaceCut::PrintSelf(ostream& os, vtkIndent indent) {
+     this->Superclass::PrintSelf(os, indent);
+ 
+-    os << indent << "User Selected Points: " << this->UserPoints << endl;
++    os << indent << "User Selected Points: " << this->UserPoints << std::endl;
+ }
+diff --git a/SurfaceTrackerCut/Plugin/Filter/vtkCurvatures1.cxx b/SurfaceTrackerCut/Plugin/Filter/vtkCurvatures1.cxx
+index ede6b8d..8f98690 100644
+--- a/SurfaceTrackerCut/Plugin/Filter/vtkCurvatures1.cxx
++++ b/SurfaceTrackerCut/Plugin/Filter/vtkCurvatures1.cxx
+@@ -151,7 +151,7 @@ void vtkCurvatures1::genNeighborhoods(vtkDataSet *inData, int ndepth) {
+         // extract vertices that comprise current cell
+         pd->GetCellPoints(i, npts, pts);
+         if (npts != 3) {
+-            cerr << "number of points that comprise cell is not 3" << endl;
++            std::cerr << "number of points that comprise cell is not 3" << std::endl;
+         }
+         a = pts[0];
+         b = pts[1];
+@@ -237,7 +237,7 @@ void vtkCurvatures1::GetPrincipalCurvature(vtkPolyData *mesh, int ndepth, int dx
+     if (!this->hasUnitNormals()) {
+         this->genUnitNormals(mesh);
+         if (!this->hasUnitNormals()) {
+-            cerr << "ERROR: cannot generate neighborhoods" << endl;
++            std::cerr << "ERROR: cannot generate neighborhoods" << std::endl;
+             return;
+         }
+     }
+@@ -391,7 +391,7 @@ void vtkCurvatures1::GetPrincipalCurvature(vtkPolyData *mesh, int ndepth, int dx
+ 
+         } else {
+             this->prinCurvature.push_back(make_pair(0.0, 0.0));
+-            cerr << "ERROR: systrs failed in GetPrincipalCurvature()" << endl;
++            std::cerr << "ERROR: systrs failed in GetPrincipalCurvature()" << std::endl;
+         }
+     }
+ }
+diff --git a/SurfaceTrackerCut/Plugin/Filter/vtkMyDGGP.cxx b/SurfaceTrackerCut/Plugin/Filter/vtkMyDGGP.cxx
+index d8b7903..f3275aa 100644
+--- a/SurfaceTrackerCut/Plugin/Filter/vtkMyDGGP.cxx
++++ b/SurfaceTrackerCut/Plugin/Filter/vtkMyDGGP.cxx
+@@ -26,7 +26,6 @@
+ #include <iostream>
+ 
+ using std::vector;
+-using std::cout;
+ 
+ vtkStandardNewMacro(vtkMyDGGP);
+ 
+@@ -95,14 +94,14 @@ int vtkMyDGGP::RequestData(vtkInformation* vtkNotUsed(request),
+     }
+ 
+     if (origIds == NULL) {
+-        cerr << "ERROR: Not enough points selected." << endl;
++        std::cerr << "ERROR: Not enough points selected." << std::endl;
+         vtkErrorMacro(<< "ERROR: Not enough points selected.");
+         return 0;
+     }
+ 
+   for (vtkIdType i = 0; i < origIds->GetNumberOfTuples(); i++) {
+       this->UserPoints->InsertNextId(origIds->GetValue(i));
+-      cout << origIds->GetValue(i) << endl;
++      std::cout << origIds->GetValue(i) << std::endl;
+   }
+   //appender to collect all geodesic paths
+   vtkSmartPointer<vtkAppendPolyData> appender =
+@@ -167,6 +166,6 @@ int vtkMyDGGP::RequestData(vtkInformation* vtkNotUsed(request),
+ void vtkMyDGGP::PrintSelf(ostream& os, vtkIndent indent) {
+   this->Superclass::PrintSelf(os, indent);
+ 
+-  os << indent << "User Selected Points: " << this->UserPoints << endl;
+-  os << indent << "IdList: " << this->IdList << endl;
++  os << indent << "User Selected Points: " << this->UserPoints << std::endl;
++  os << indent << "IdList: " << this->IdList << std::endl;
+ }
