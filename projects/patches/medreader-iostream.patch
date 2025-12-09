@@ -1,0 +1,95 @@
+From 226f8f719713ce11669fcee60166444aedbc16de Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Tue, 9 Dec 2025 15:38:21 -0500
+Subject: [PATCH 1/2] iostreams: use `std::cout`
+
+VTK removed its `using std::cout;` line from its headers.
+---
+ plugin/MEDReaderIO/vtkExtractGroup.cxx                | 4 ++--
+ plugin/MEDReaderIO/vtkMEDReader.cxx                   | 4 ++--
+ plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/plugin/MEDReaderIO/vtkExtractGroup.cxx b/plugin/MEDReaderIO/vtkExtractGroup.cxx
+index 1f811a4a..f7215902 100644
+--- a/plugin/MEDReaderIO/vtkExtractGroup.cxx
++++ b/plugin/MEDReaderIO/vtkExtractGroup.cxx
+@@ -99,7 +99,7 @@ int vtkExtractGroup::RequestInformation(vtkInformation * /*request*/, vtkInforma
+   try
+     {
+ //      std::cerr << "########################################## vtkExtractGroup::RequestInformation ##########################################" << std::endl;
+-//      request->Print(cout);
++//      request->Print(std::cout);
+       //vtkInformation *outInfo(outputVector->GetInformationObject(0)); // todo: unused
+       vtkInformation *inputInfo(inputVector[0]->GetInformationObject(0));
+       if(!ExtractGroupInternal::IndependantIsInformationOK(vtkMEDReader::META_DATA(),inputInfo))
+@@ -220,7 +220,7 @@ int vtkExtractGroup::RequestData(vtkInformation * /*request*/, vtkInformationVec
+   try
+     {
+       // std::cerr << "########################################## vtkExtractGroup::RequestData        ##########################################" << std::endl;
+-      // request->Print(cout);
++      // request->Print(std::cout);
+       vtkInformation* inputInfo=inputVector[0]->GetInformationObject(0);
+       vtkMultiBlockDataSet *inputMB(vtkMultiBlockDataSet::SafeDownCast(inputInfo->Get(vtkDataObject::DATA_OBJECT())));
+       if(inputMB->GetNumberOfBlocks()!=1)
+diff --git a/plugin/MEDReaderIO/vtkMEDReader.cxx b/plugin/MEDReaderIO/vtkMEDReader.cxx
+index f8e5ac46..15a53ddf 100755
+--- a/plugin/MEDReaderIO/vtkMEDReader.cxx
++++ b/plugin/MEDReaderIO/vtkMEDReader.cxx
+@@ -303,7 +303,7 @@ int vtkMEDReader::RequestInformation(vtkInformation *request, vtkInformationVect
+         }
+       }
+ 
+-//      request->Print(cout);
++//      request->Print(std::cout);
+       vtkInformation *outInfo(outputVector->GetInformationObject(0));
+       outInfo->Set(vtkDataObject::DATA_TYPE_NAME(),"vtkMultiBlockDataSet");
+       this->UpdateSIL(request, outInfo);
+@@ -354,7 +354,7 @@ int vtkMEDReader::RequestData(vtkInformation *request, vtkInformationVector ** /
+           this->TimeFlagSelection->GetArrayName(i));
+       }
+ 
+-//      request->Print(cout);
++//      request->Print(std::cout);
+       vtkInformation *outInfo(outputVector->GetInformationObject(0));
+       vtkMultiBlockDataSet *output(vtkMultiBlockDataSet::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT())));
+       //bool isUpdated(false); // todo: unused
+diff --git a/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx b/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx
+index 639a75ad..9f083798 100644
+--- a/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx
++++ b/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx
+@@ -141,7 +141,7 @@ void pqMEDReaderTimesFlagsWidget::setTimeSteps(QList< QList< QVariant> > timeSte
+ //-----------------------------------------------------------------------------
+ void pqMEDReaderTimesFlagsWidget::setTimeStepsDomain(QList< QList< QVariant> > timeSteps)
+ {
+-  cout<<"TimeStepsDomai"<<endl;
++  std::cout<<"TimeStepsDomai"<<std::endl;
+   // Block signals so the reloading does not trigger
+   // UncheckPropertyModified event
+   this->blockSignals(true);
+
+From d940178537470b54fbfa952bd40f012f790e06e4 Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Tue, 9 Dec 2025 15:38:49 -0500
+Subject: [PATCH 2/2] pqMEDReaderTimesFlagsWidget: remove `cout` line in normal
+ code
+
+This looks like debugging code. If it does want to print, it should use
+the logging infrastructure instead.
+---
+ plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx b/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx
+index 9f083798..1a8f5e6f 100644
+--- a/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx
++++ b/plugin/ParaViewPlugin/pqMEDReaderTimesFlagsWidget.cxx
+@@ -141,7 +141,7 @@ void pqMEDReaderTimesFlagsWidget::setTimeSteps(QList< QList< QVariant> > timeSte
+ //-----------------------------------------------------------------------------
+ void pqMEDReaderTimesFlagsWidget::setTimeStepsDomain(QList< QList< QVariant> > timeSteps)
+ {
+-  std::cout<<"TimeStepsDomai"<<std::endl;
++  // std::cout<<"TimeStepsDomai"<<std::endl;
+   // Block signals so the reloading does not trigger
+   // UncheckPropertyModified event
+   this->blockSignals(true);
