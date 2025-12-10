@@ -199,3 +199,8 @@ superbuild_add_project(ttk
     -DTTK_WHITELIST_MODE:BOOL=TRUE
     ${ttk_module_settings}
   )
+
+# https://github.com/topology-tool-kit/ttk/pull/1126
+# standalone/ changes stripped
+superbuild_apply_patch(ttk iostream
+  "Fix `iostream` bits")
