@@ -165,7 +165,7 @@ endif ()
 # TODO: enable embree, for now
 # there is a missing embree3/rtcore.h (windows)
 superbuild_add_project(ttk
-  DEPENDS paraview boost cxx11
+  DEPENDS paraview boost cxx11 qhull
   DEPENDS_OPTIONAL eigen numpy openmp python3 scipy zfp zlib
   LICENSE_FILES
     LICENSE
