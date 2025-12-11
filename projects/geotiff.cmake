@@ -25,3 +25,7 @@ superbuild_add_project(geotiff
 # https://github.com/OSGeo/libgeotiff/issues/20
 superbuild_apply_patch(geotiff tiff-imported-targets
   "Handle TIFF imported targets")
+
+# System zlib might provide a CMake package which masks the superbuild's
+superbuild_apply_patch(geotiff no-zlib-cmake-package
+  "Ignore `ZLIB.cmake` packages")
