@@ -1,0 +1,15 @@
+diff -u -r -U3 PDAL-2.9.0-src/cmake/macros.cmake PDAL-2.9.0-src.no-gtest/cmake/macros.cmake
+--- PDAL-2.9.0-src/cmake/macros.cmake	2025-06-19 14:48:31.000000000 -0400
++++ PDAL-2.9.0-src.no-gtest/cmake/macros.cmake	2025-12-11 11:34:28.753929632 -0500
+@@ -184,6 +184,11 @@
+ #    LINK_WITH link test executable with libraries
+ #    INCLUDES header file directories
+ #
++
++if (NOT WITH_TESTS)
++    return ()
++endif ()
++
+ # If we don't have GTest go activate it first
+ if(NOT TARGET GTest::gtest)
+     include (${PDAL_CMAKE_DIR}/gtest.cmake)

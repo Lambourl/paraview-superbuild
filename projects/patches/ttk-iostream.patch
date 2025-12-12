@@ -1,0 +1,1797 @@
+From 3d3300e507f580941c0bbd0cc1417640026cc31e Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Tue, 9 Dec 2025 21:11:23 -0500
+Subject: [PATCH] iostream: use std:: for {cout,cerr,endl}
+
+VTK has removed the `using` for these symbols.
+---
+ core/base/common/Debug.cpp                    |   4 +-
+ core/base/contourForests/ContourForests.cpp   | 142 +++++++++---------
+ .../contourForests/ContourForestsTemplate.h   |  12 +-
+ .../contourForestsTree/ContourForestsTree.cpp |  44 +++---
+ .../contourForestsTree/DeprecatedSuperArc.h   |   2 +-
+ core/base/contourForestsTree/MergeTree.cpp    |  94 ++++++------
+ .../contourForestsTree/MergeTreeTemplate.h    |  18 +--
+ core/base/contourTree/ContourTree.cpp         | 118 +++++++--------
+ core/base/ftmTree/FTMSegmentation.cpp         |   4 +-
+ core/base/ftmTree/FTMTree_CT.cpp              |  40 ++---
+ core/base/ftmTree/FTMTree_MT.cpp              |  34 ++---
+ core/base/ftrGraph/Graph.cpp                  |  22 +--
+ .../PDClustering.h                            |   2 +-
+ .../PersistenceDiagramClustering.cpp          |   2 +-
+ core/base/reebSpace/ReebSpace.cpp             |   4 +-
+ core/vtk/ttkAlgorithm/ttkAlgorithm.cpp        |   2 +-
+ core/vtk/ttkAlgorithm/ttkUtils.cpp            |   4 +-
+ core/vtk/ttkCinemaWriter/ttkCinemaWriter.cpp  |   2 +-
+ .../ttkContourForests/ttkContourForests.cpp   |  36 ++---
+ core/vtk/ttkMergeTree/ttkMergeTreeBase.cpp    |  28 ++--
+ core/vtk/ttkProgramBase/ttkProgramBase.cpp    |   2 +-
+ .../ttkUserInterfaceBase.cpp                  |   8 +-
+ standalone/GeometrySmoother/cmd/main.cpp      |  10 +-
+ standalone/UncertainDataEstimator/Editor.cpp  |  14 +-
+ 24 files changed, 325 insertions(+), 323 deletions(-)
+
+diff --git a/core/base/common/Debug.cpp b/core/base/common/Debug.cpp
+index 43f29f7d67..58f1cf48fb 100644
+--- a/core/base/common/Debug.cpp
++++ b/core/base/common/Debug.cpp
+@@ -25,7 +25,7 @@ Debug::~Debug() {
+   if((lastObject_) && (ttk::goodbyeMsg_)) {
+ 
+     printMsg(
+-      "Goodbye :)", debug::Priority::PERFORMANCE, debug::LineMode::NEW, cout);
++      "Goodbye :)", debug::Priority::PERFORMANCE, debug::LineMode::NEW, std::cout);
+ 
+     ttk::goodbyeMsg_ = false;
+   }
+@@ -147,7 +147,7 @@ int Debug::welcomeMsg(ostream &stream) {
+ int Debug::setDebugLevel(const int &debugLevel) {
+   debugLevel_ = debugLevel;
+ 
+-  welcomeMsg(cout);
++  welcomeMsg(std::cout);
+ 
+   return 0;
+ }
+diff --git a/core/base/contourForests/ContourForests.cpp b/core/base/contourForests/ContourForests.cpp
+index f301935cc4..4290133782 100644
+--- a/core/base/contourForests/ContourForests.cpp
++++ b/core/base/contourForests/ContourForests.cpp
+@@ -141,8 +141,8 @@ void ContourForests::stitchTree(const char treetype) {
+       = make_pair(parallelData_.interfaces[i].getSeed(), false);
+ 
+     if(DEBUG) {
+-      cout << "partition : " << static_cast<unsigned>(i);
+-      cout << " seed is : " << seedPair.first << endl << endl;
++      std::cout << "partition : " << static_cast<unsigned>(i);
++      std::cout << " seed is : " << seedPair.first << std::endl << std::endl;
+     }
+ 
+     // For each superarc crossing the upper boundary :
+@@ -169,14 +169,14 @@ void ContourForests::stitchTree(const char treetype) {
+       MergeTree *otherTree = getTreePart(otherPartition);
+ 
+       if(DEBUG) {
+-        cout << "crossing arc is " << curTree->printArc(arc) << endl;
++        std::cout << "crossing arc is " << curTree->printArc(arc) << std::endl;
+       }
+ 
+       if(DEBUG) {
+-        cout << "stitch vertex : " << stitchVertex << endl;
+-        cout << "on partition " << static_cast<unsigned>(otherPartition)
+-             << endl;
+-        cout << "crossing arc is now " << curTree->printArc(arc) << endl;
++        std::cout << "stitch vertex : " << stitchVertex << std::endl;
++        std::cout << "on partition " << static_cast<unsigned>(otherPartition)
++             << std::endl;
++        std::cout << "crossing arc is now " << curTree->printArc(arc) << std::endl;
+       }
+ 
+       const idNode &curTreeStitchNodeId
+@@ -188,7 +188,7 @@ void ContourForests::stitchTree(const char treetype) {
+         if(DEBUG) {
+           const idSuperArc &sa
+             = otherTree->getCorrespondingSuperArcId(stitchVertex);
+-          cout << "other tree arc is : " << otherTree->printArc(sa) << endl;
++          std::cout << "other tree arc is : " << otherTree->printArc(sa) << std::endl;
+         }
+         const auto &arcToHide
+           = otherTree->reverseInsertNode(curTreeStitchNode, true);
+@@ -198,8 +198,8 @@ void ContourForests::stitchTree(const char treetype) {
+         otherTreeAlreadyHide = true;
+ 
+         if(DEBUG) {
+-          cout << "hide arc in other : " << otherTree->printArc(arcToHide)
+-               << endl;
++          std::cout << "hide arc in other : " << otherTree->printArc(arcToHide)
++               << std::endl;
+         }
+       }
+ 
+@@ -208,10 +208,10 @@ void ContourForests::stitchTree(const char treetype) {
+       Node *otherTreeStitchNode = otherTree->getNode(otherTreeStitchNodeId);
+ 
+       if(DEBUG) {
+-        cout << "Stitch nodes : " << endl;
+-        cout << "current : " << curTree->printNode(curTreeStitchNodeId) << endl;
+-        cout << "other   : " << otherTree->printNode(otherTreeStitchNodeId)
+-             << endl;
++        std::cout << "Stitch nodes : " << std::endl;
++        std::cout << "current : " << curTree->printNode(curTreeStitchNodeId) << std::endl;
++        std::cout << "other   : " << otherTree->printNode(otherTreeStitchNodeId)
++             << std::endl;
+       }
+ 
+       // Now we can remove all arc above the stitch vertex in the current tree
+@@ -225,14 +225,14 @@ void ContourForests::stitchTree(const char treetype) {
+       // clear its down arcs if it is the stitch node.
+       if(stitchVertex == seedPair.first) {
+         if(DEBUG) {
+-          cout << "stitch vertex is seed" << endl;
++          std::cout << "stitch vertex is seed" << std::endl;
+         }
+         // we have'nt clear it yet
+         if(!seenSeed[otherPartition]) {
+           seenSeed[otherPartition] = true;
+           otherTree->removeInternalDownArcs(otherTreeStitchNodeId);
+           if(DEBUG) {
+-            cout << "clear below stitch vert " << endl;
++            std::cout << "clear below stitch vert " << std::endl;
+           }
+         }
+       } else if(!otherTreeAlreadyHide && crossing->getDownCT() == i) {
+@@ -242,11 +242,11 @@ void ContourForests::stitchTree(const char treetype) {
+           otherTreeStitchNodeId, currentBelowSeed);
+ 
+         if(DEBUG) {
+-          cout << "hide arc leading to: ";
++          std::cout << "hide arc leading to: ";
+           if(arcToHide != nullSuperArc) {
+-            cout << otherTree->printArc(arcToHide) << endl;
++            std::cout << otherTree->printArc(arcToHide) << std::endl;
+           } else {
+-            cout << "not found" << endl;
++            std::cout << "not found" << std::endl;
+           }
+         }
+       }
+@@ -275,18 +275,18 @@ void ContourForests::stitchTree(const char treetype) {
+       if(crossNextInterface) {
+         otherTree->addCrossingAbove(otherTree->getNumberOfSuperArcs() - 1);
+         if(DEBUG) {
+-          cout << "new crossing above" << endl;
++          std::cout << "new crossing above" << std::endl;
+         }
+       }
+ 
+       if(DEBUG) {
+-        cout << "arc added :" << endl;
+-        cout << "current : "
+-             << curTree->printArc(curTree->getNumberOfSuperArcs() - 1) << endl;
+-        cout << "other   : "
++        std::cout << "arc added :" << std::endl;
++        std::cout << "current : "
++             << curTree->printArc(curTree->getNumberOfSuperArcs() - 1) << std::endl;
++        std::cout << "other   : "
+              << otherTree->printArc(otherTree->getNumberOfSuperArcs() - 1)
+-             << endl;
+-        cout << endl << endl;
++             << std::endl;
++        std::cout << std::endl << std::endl;
+       }
+ 
+     } // for each arc of this curTree
+@@ -381,8 +381,8 @@ void ContourForests::unifyTree(const char treetype) {
+         leavesNodes.emplace(partition, l);
+ 
+         if(DEBUG) {
+-          cout << "will see : partition : " << static_cast<unsigned>(partition);
+-          cout << " leaf node " << currentTree->printNode(l) << endl;
++          std::cout << "will see : partition : " << static_cast<unsigned>(partition);
++          std::cout << " leaf node " << currentTree->printNode(l) << std::endl;
+         }
+ 
+         // seen once
+@@ -409,10 +409,10 @@ void ContourForests::unifyTree(const char treetype) {
+     Node *currentNode = currentTree->getNode(currentNodeId);
+ 
+     if(DEBUG) {
+-      cout << endl;
+-      cout << "process : partition : "
+-           << static_cast<unsigned>(currentPartition) << endl;
+-      cout << " node " << currentTree->printNode(currentNodeId) << endl;
++      std::cout << std::endl;
++      std::cout << "process : partition : "
++           << static_cast<unsigned>(currentPartition) << std::endl;
++      std::cout << " node " << currentTree->printNode(currentNodeId) << std::endl;
+     }
+ 
+     // create or recover in tmpTree
+@@ -433,12 +433,12 @@ void ContourForests::unifyTree(const char treetype) {
+       SuperArc *upArc = currentTree->getSuperArc(upArcId);
+ 
+       if(DEBUG) {
+-        cout << " process arc " << currentTree->printArc(upArcId) << endl;
++        std::cout << " process arc " << currentTree->printArc(upArcId) << std::endl;
+       }
+ 
+       if(!upArc->isVisible()) {
+         if(DEBUG) {
+-          cout << " - ignore not visible" << endl;
++          std::cout << " - ignore not visible" << std::endl;
+         }
+         continue;
+       }
+@@ -469,14 +469,14 @@ void ContourForests::unifyTree(const char treetype) {
+            && currentNode->getNumberOfDownSuperArcs() == 1) {
+           upArc = currentTree->getSuperArc(currentNode->getUpSuperArcId(0));
+           if(DEBUG) {
+-            cout << " cross : "
++            std::cout << " cross : "
+                  << currentTree->printArc(currentNode->getUpSuperArcId(0));
+-            cout << endl;
++            std::cout << std::endl;
+           }
+         } else {
+           // no longer regular : stop here
+           if(DEBUG) {
+-            cout << "stop at " << currentTree->printNode(currentNodeId) << endl;
++            std::cout << "stop at " << currentTree->printNode(currentNodeId) << std::endl;
+           }
+           break;
+         }
+@@ -492,7 +492,7 @@ void ContourForests::unifyTree(const char treetype) {
+       tmpTree.closeSuperArc(newArcId_tt, closingNode_tt, false, false);
+ 
+       if(DEBUG) {
+-        cout << " Create arc : " << tmpTree.printArc(newArcId_tt) << endl;
++        std::cout << " Create arc : " << tmpTree.printArc(newArcId_tt) << std::endl;
+       }
+ 
+       // push current vertex TODO
+@@ -511,14 +511,14 @@ void ContourForests::unifyTree(const char treetype) {
+       if(nbVisit[closingVertex] == downVal) {
+         leavesNodes.emplace(closingPartition, closingNodeId);
+         if(DEBUG) {
+-          cout << " push : partition : "
+-               << static_cast<unsigned>(closingPartition) << endl;
+-          cout << " push : node : " << closingTree->printNode(closingNodeId)
+-               << endl;
++          std::cout << " push : partition : "
++               << static_cast<unsigned>(closingPartition) << std::endl;
++          std::cout << " push : node : " << closingTree->printNode(closingNodeId)
++               << std::endl;
+         }
+       } else if(DEBUG) {
+-        cout << " visit : " << nbVisit[closingVertex] << endl;
+-        cout << " downVal : " << downVal << endl;
++        std::cout << " visit : " << nbVisit[closingVertex] << std::endl;
++        std::cout << " downVal : " << downVal << std::endl;
+       }
+     } // end for each up arc
+   } // end while leavesNodes
+@@ -547,34 +547,34 @@ void ContourForests::printVectCT() {
+   int arcCTUp, arcCTDown;
+ 
+   for(idPartition nb = 0; nb < parallelParams_.nbPartitions; ++nb) {
+-    cout << "CT " << nb << endl;
+-    cout << "Nodes" << endl;
++    std::cout << "CT " << nb << std::endl;
++    std::cout << "Nodes" << std::endl;
+ 
+     for(const auto &n : parallelData_.trees[nb].getNodes()) {
+       if(!n.isHidden()) {
+-        cout << "Node  " << n.getVertexId();
++        std::cout << "Node  " << n.getVertexId();
+ 
+         if(n.isHidden())
+-          cout << " X ";
++          std::cout << " X ";
+ 
+-        cout << endl;
+-        cout << "  arc up : ";
++        std::cout << std::endl;
++        std::cout << "  arc up : ";
+ 
+         for(idSuperArc i = 0; i < n.getNumberOfUpSuperArcs(); ++i) {
+-          cout << n.getUpSuperArcId(i) << " ";
++          std::cout << n.getUpSuperArcId(i) << " ";
+         }
+ 
+-        cout << endl << " arc down : ";
++        std::cout << std::endl << " arc down : ";
+ 
+         for(idSuperArc i = 0; i < n.getNumberOfDownSuperArcs(); ++i) {
+-          cout << n.getDownSuperArcId(i) << " ";
++          std::cout << n.getDownSuperArcId(i) << " ";
+         }
+ 
+-        cout << endl;
++        std::cout << std::endl;
+       }
+     }
+ 
+-    cout << "Arcs" << endl;
++    std::cout << "Arcs" << std::endl;
+ 
+     for(const auto &sa : parallelData_.trees[nb].getSuperArc()) {
+       if(!sa.isHidden()) {
+@@ -582,48 +582,48 @@ void ContourForests::printVectCT() {
+         arcCTUp = sa.getUpCT();
+ 
+         if(sa.getDownNodeId() == nullNodes) {
+-          cout << "||";
++          std::cout << "||";
+         } else {
+-          cout << static_cast<unsigned>(arcCTDown) << ":";
+-          cout << parallelData_.trees[arcCTDown]
++          std::cout << static_cast<unsigned>(arcCTDown) << ":";
++          std::cout << parallelData_.trees[arcCTDown]
+                     .getNode(sa.getDownNodeId())
+                     ->getVertexId();
+         }
+ 
+         if(sa.isHidden())
+-          cout << " <X> ";
++          std::cout << " <X> ";
+         else if(!sa.isVisible())
+-          cout << " <-> ";
++          std::cout << " <-> ";
+         else
+-          cout << " <> ";
++          std::cout << " <> ";
+ 
+         if(sa.getUpNodeId() == nullNodes) {
+-          cout << "||";
++          std::cout << "||";
+         } else {
+-          cout << static_cast<unsigned>(arcCTUp) << ":";
+-          cout << parallelData_.trees[arcCTUp]
++          std::cout << static_cast<unsigned>(arcCTUp) << ":";
++          std::cout << parallelData_.trees[arcCTUp]
+                     .getNode(sa.getUpNodeId())
+                     ->getVertexId();
+         }
+ 
+-        cout << endl;
++        std::cout << std::endl;
+       }
+     }
+ 
+     if(true) {
+-      cout << "Leaves" << endl;
++      std::cout << "Leaves" << std::endl;
+ 
+       for(const auto &l : parallelData_.trees[nb].getLeaves())
+-        cout << " " << l;
++        std::cout << " " << l;
+ 
+-      cout << endl;
++      std::cout << std::endl;
+ 
+-      cout << "Roots" << endl;
++      std::cout << "Roots" << std::endl;
+ 
+       for(const auto &r : parallelData_.trees[nb].getRoots())
+-        cout << " " << r;
++        std::cout << " " << r;
+ 
+-      cout << endl;
++      std::cout << std::endl;
+     }
+   }
+ }
+diff --git a/core/base/contourForests/ContourForestsTemplate.h b/core/base/contourForests/ContourForestsTemplate.h
+index 6ea6557335..3e5aa7bd79 100644
+--- a/core/base/contourForests/ContourForestsTemplate.h
++++ b/core/base/contourForests/ContourForestsTemplate.h
+@@ -653,19 +653,19 @@ namespace ttk {
+       // {
+ 
+       // for (idInterface i = 0; i < parallelParams_.nbInterfaces; i++) {
+-      // cout << "interface : " << i << endl;
++      // std::cout << "interface : " << i << std::endl;
+ 
+-      // cout << "upper" << endl;
++      // std::cout << "upper" << std::endl;
+       // for (const SimplexId &v : parallelData_.interfaces[i].getUpper()) {
+-      // cout << v << ", ";
++      // std::cout << v << ", ";
+       //}
+ 
+-      // cout << endl << "lower" << endl;
++      // std::cout << std::endl << "lower" << std::endl;
+       // for (const SimplexId &v : parallelData_.interfaces[i].getLower()) {
+-      // cout << v << ", ";
++      // std::cout << v << ", ";
+       //}
+ 
+-      // cout << endl;
++      // std::cout << std::endl;
+       //}
+ 
+       // }
+diff --git a/core/base/contourForestsTree/ContourForestsTree.cpp b/core/base/contourForestsTree/ContourForestsTree.cpp
+index 7340863835..bc829ff6a0 100644
+--- a/core/base/contourForestsTree/ContourForestsTree.cpp
++++ b/core/base/contourForestsTree/ContourForestsTree.cpp
+@@ -80,7 +80,7 @@ int ContourForestsTree::combine(
+   }
+ 
+   if(DEBUG) {
+-    cout << "growingNodes : " << growingNodes.size() << endl;
++    std::cout << "growingNodes : " << growingNodes.size() << std::endl;
+   }
+ 
+   if(nbAddedleavesST == 1 && nbAddedleavesJT == 1) {
+@@ -94,7 +94,7 @@ int ContourForestsTree::combine(
+   treeData_.leaves.reserve(jt_.getLeaves().size() + st_.getLeaves().size());
+ 
+   if(growingNodes.empty()) {
+-    cout << "[ContourForestsTree::combine ] Nothing to combine" << endl;
++    std::cout << "[ContourForestsTree::combine ] Nothing to combine" << std::endl;
+   }
+ 
+   // seed : to keep crossing edges;
+@@ -121,10 +121,10 @@ int ContourForestsTree::combine(
+ 
+     if(DEBUG) {
+       if(xt == &jt_)
+-        cout << "JT ";
++        std::cout << "JT ";
+       else
+-        cout << "ST ";
+-      cout << "node : " << currentNode->getVertexId() << endl;
++        std::cout << "ST ";
++      std::cout << "node : " << currentNode->getVertexId() << std::endl;
+     }
+ 
+     correspondingNodeId
+@@ -152,15 +152,15 @@ int ContourForestsTree::combine(
+ 
+       // if(currentNode->getNumberOfUpSuperArcs() == 0){
+       // if (DEBUG) {
+-      // cout << "ignore orphan" << endl;
++      // std::cout << "ignore orphan" << std::endl;
+       //}
+       // continue;
+       //}
+ 
+       if(yt->getNode(correspondingNodeId)->getNumberOfDownSuperArcs() > 1) {
+         if(DEBUG) {
+-          cout << "re-enqueue and ignore " << yt->printNode(correspondingNodeId)
+-               << endl;
++          std::cout << "re-enqueue and ignore " << yt->printNode(correspondingNodeId)
++               << std::endl;
+         }
+ 
+         growingNodes.emplace(head.first, head.second);
+@@ -168,7 +168,7 @@ int ContourForestsTree::combine(
+       }
+ 
+       if(DEBUG) {
+-        cout << "  ignore" << endl;
++        std::cout << "  ignore" << std::endl;
+       }
+ 
+       continue;
+@@ -191,7 +191,7 @@ int ContourForestsTree::combine(
+ 
+     parentNode = xt->getNode(parentId);
+ 
+-    // cout << " parent node :" << parentNode->getVertexId() << endl;
++    // std::cout << " parent node :" << parentNode->getVertexId() << std::endl;
+ 
+     // HERE parent is null ...
+     if(isCorrespondingNode(parentNode->getVertexId())) {
+@@ -255,16 +255,16 @@ int ContourForestsTree::combine(
+       }
+ 
+       if(DEBUG) {
+-        cout << " arc added : (segm: " << nbv << ") ";
+-        cout << printArc(createdArc) << endl;
++        std::cout << " arc added : (segm: " << nbv << ") ";
++        std::cout << printArc(createdArc) << std::endl;
+       }
+     }
+ 
+     // DelNode(XT, i)
+     {
+       if(DEBUG) {
+-        cout << " delete xt (" << (xt == &jt_)
+-             << ") node :" << xt->getNode(head.second)->getVertexId() << endl;
++        std::cout << " delete xt (" << (xt == &jt_)
++             << ") node :" << xt->getNode(head.second)->getVertexId() << std::endl;
+       }
+ 
+       xt->delNode(head.second, storage);
+@@ -274,16 +274,16 @@ int ContourForestsTree::combine(
+     {
+       if(yt->getNode(correspondingNodeId)->getNumberOfDownSuperArcs() < 2) {
+         if(DEBUG) {
+-          cout << " delete yt (" << head.first << ") node :";
+-          cout << yt->getNode(correspondingNodeId)->getVertexId();
+-          cout << " have : ";
+-          cout << static_cast<unsigned>(
++          std::cout << " delete yt (" << head.first << ") node :";
++          std::cout << yt->getNode(correspondingNodeId)->getVertexId();
++          std::cout << " have : ";
++          std::cout << static_cast<unsigned>(
+             yt->getNode(correspondingNodeId)->getNumberOfDownSuperArcs());
+-          cout << " down";
+-          cout << " and : "
++          std::cout << " down";
++          std::cout << " and : "
+                << static_cast<unsigned>(
+                     yt->getNode(correspondingNodeId)->getNumberOfUpSuperArcs())
+-               << " up" << endl;
++               << " up" << std::endl;
+         }
+ 
+         yt->delNode(correspondingNodeId, storage, arcVertList, arcVertSize);
+@@ -295,7 +295,7 @@ int ContourForestsTree::combine(
+       growingNodes.emplace(head.first, parentId);
+ 
+       if(DEBUG) {
+-        cout << "will see : " << parentNode->getVertexId() << endl;
++        std::cout << "will see : " << parentNode->getVertexId() << std::endl;
+       }
+     }
+ 
+diff --git a/core/base/contourForestsTree/DeprecatedSuperArc.h b/core/base/contourForestsTree/DeprecatedSuperArc.h
+index 6d2c5a0828..4a648f00d0 100644
+--- a/core/base/contourForestsTree/DeprecatedSuperArc.h
++++ b/core/base/contourForestsTree/DeprecatedSuperArc.h
+@@ -330,7 +330,7 @@ namespace ttk {
+                                        const SimplexId &size) {
+ 
+ #ifndef TTK_ENABLE_KAMIKAZE
+-        // cout << "size " << sizeVertList_ << " add " << size << " on " <<
++        // std::cout << "size " << sizeVertList_ << " add " << size << " on " <<
+         // allocSgm_ << std::endl;
+         if(sizeVertList_ + size >= allocSgm_) {
+           std::cerr << "SEGMENTATION SIZE PROBLEM :" << std::endl;
+diff --git a/core/base/contourForestsTree/MergeTree.cpp b/core/base/contourForestsTree/MergeTree.cpp
+index a325aa246e..0cd9bad385 100644
+--- a/core/base/contourForestsTree/MergeTree.cpp
++++ b/core/base/contourForestsTree/MergeTree.cpp
+@@ -173,7 +173,7 @@ void MergeTree::parallelUpdateSegmentation(const bool ttkNotUsed(ct)) {
+ }
+ 
+ void MergeTree::parallelInitNodeValence(const int nbThreadValence) {
+-  // cout << "SENTINEL : Parallel Init Node Valence " << endl;
++  // std::cout << "SENTINEL : Parallel Init Node Valence " << std::endl;
+   const auto &nbNodes = getNumberOfNodes();
+ 
+ #ifdef TTK_ENABLE_OPENMP
+@@ -215,7 +215,7 @@ idSuperArc MergeTree::openSuperArc(const idNode &downNodeId,
+                                    const bool overlapA) {
+ #ifndef TTK_ENABLE_KAMIKAZE
+   if(downNodeId >= getNumberOfNodes()) {
+-    cout << "[Merge Tree] openSuperArc on a inexisting node !" << endl;
++    std::cout << "[Merge Tree] openSuperArc on a inexisting node !" << std::endl;
+     return -2;
+   }
+ #endif
+@@ -265,12 +265,12 @@ void MergeTree::closeSuperArc(const idSuperArc &superArcId,
+ #ifndef TTK_ENABLE_KAMIKAZE
+ 
+   if(superArcId >= getNumberOfSuperArcs()) {
+-    cout << "[Merge Tree] closeSuperArc on a inexisting arc !" << endl;
++    std::cout << "[Merge Tree] closeSuperArc on a inexisting arc !" << std::endl;
+     return;
+   }
+ 
+   if(upNodeId >= getNumberOfNodes()) {
+-    cout << "[Merge Tree] closeOpenedArc on a inexisting node !" << endl;
++    std::cout << "[Merge Tree] closeOpenedArc on a inexisting node !" << std::endl;
+     return;
+   }
+ 
+@@ -516,8 +516,8 @@ void MergeTree::hideNode(const idNode &node) {
+ idNode MergeTree::makeNode(const SimplexId &vertexId, const SimplexId &term) {
+ #ifndef TTK_ENABLE_KAMIKAZE
+   if(vertexId < 0 || vertexId >= scalars_->size) {
+-    cout << "[Merge Tree] make node, wrong vertex :" << vertexId << " on "
+-         << scalars_->size << endl;
++    std::cout << "[Merge Tree] make node, wrong vertex :" << vertexId << " on "
++         << scalars_->size << std::endl;
+     return -1;
+   }
+ #endif
+@@ -552,14 +552,14 @@ void MergeTree::delNode(
+ 
+ #ifndef TTK_ENABLE_KAMIKAZE
+     if(mainNode->getNumberOfDownSuperArcs() != 1) {
+-      cout << endl << "[MergeTree]:delNode won't delete ";
+-      cout << mainNode->getVertexId() << " (root) with ";
+-      cout << static_cast<unsigned>(mainNode->getNumberOfDownSuperArcs())
++      std::cout << std::endl << "[MergeTree]:delNode won't delete ";
++      std::cout << mainNode->getVertexId() << " (root) with ";
++      std::cout << static_cast<unsigned>(mainNode->getNumberOfDownSuperArcs())
+            << " down ";
+-      cout << static_cast<unsigned>(mainNode->getNumberOfUpSuperArcs())
++      std::cout << static_cast<unsigned>(mainNode->getNumberOfUpSuperArcs())
+            << " up ";
+-      cout << " partition : " << static_cast<unsigned>(treeData_.partition)
+-           << endl;
++      std::cout << " partition : " << static_cast<unsigned>(treeData_.partition)
++           << std::endl;
+       return;
+     }
+ #endif
+@@ -746,7 +746,7 @@ idSuperArc MergeTree::reverseInsertNode(Node *node, const bool segment) {
+     Node *myNode = vertex2Node(node->getVertexId());
+     // If it has been hidden / replaced we need to re-make it
+     if(myNode->isHidden()) {
+-      cout << "reverse insert don t  deal with hidden" << endl;
++      std::cout << "reverse insert don t  deal with hidden" << std::endl;
+     } else
+       return nullSuperArc;
+   }
+@@ -947,7 +947,7 @@ idSuperArc MergeTree::hideAndClearLeadingTo(const idNode &baseNode,
+       while(p != baseNode && getNode(p)->getUpValence()) {
+         // SHOULD HAVE ONLY ONE ARC
+         if(getNode(p)->getUpValence() != 1)
+-          cout << "Noise with up valence ! (hide&clear Leading to)" << endl;
++          std::cout << "Noise with up valence ! (hide&clear Leading to)" << std::endl;
+ 
+         a = getNode(p)->getUpSuperArcId(0);
+         p = getSuperArc(a)->getUpNodeId();
+@@ -971,34 +971,34 @@ void MergeTree::printTree2() {
+ #pragma omp critical
+ #endif
+   {
+-    cout << "Partition : " << static_cast<unsigned>(treeData_.partition)
+-         << endl;
++    std::cout << "Partition : " << static_cast<unsigned>(treeData_.partition)
++         << std::endl;
+ 
+-    cout << "Nodes----------" << endl;
++    std::cout << "Nodes----------" << std::endl;
+     for(idNode nid = 0; nid < getNumberOfNodes(); nid++) {
+       const Node &n = treeData_.nodes[nid];
+       if(n.isVisible()) {
+-        cout << printNode(nid) << endl;
++        std::cout << printNode(nid) << std::endl;
+       }
+     }
+ 
+-    cout << "Arcs-----------" << endl;
++    std::cout << "Arcs-----------" << std::endl;
+     for(idSuperArc said = 0; said < getNumberOfSuperArcs(); ++said) {
+       const SuperArc &sa = treeData_.superArcs[said];
+       if(sa.isVisible()) {
+-        cout << printArc(said) << endl;
++        std::cout << printArc(said) << std::endl;
+       }
+     }
+ 
+-    cout << "Leaves" << endl;
++    std::cout << "Leaves" << std::endl;
+     for(const auto &l : treeData_.leaves)
+-      cout << " " << treeData_.nodes[l].getVertexId();
+-    cout << endl;
++      std::cout << " " << treeData_.nodes[l].getVertexId();
++    std::cout << std::endl;
+ 
+-    cout << "Roots" << endl;
++    std::cout << "Roots" << std::endl;
+     for(const auto &r : treeData_.roots)
+-      cout << " " << treeData_.nodes[r].getVertexId();
+-    cout << endl;
++      std::cout << " " << treeData_.nodes[r].getVertexId();
++    std::cout << std::endl;
+   }
+ }
+ 
+@@ -1077,7 +1077,7 @@ void MergeTree::markThisArc(vector<ExtendedUnionFind *> &ufArray,
+     // Parent have never been seen : recopy UF
+     ufArray[parentNodeId] = ufArray[curNodeId]->find();
+     ufArray[parentNodeId]->find()->setOrigin(curSegmenSize);
+-    // cout << "will merge " << getNode(curNodeId)->getVertexId() << endl;
++    // std::cout << "will merge " << getNode(curNodeId)->getVertexId() << std::endl;
+   } else {
+     // The parent have already been visited : merge UF and segmentation
+     const auto &oldSegmentationSize
+@@ -1085,13 +1085,13 @@ void MergeTree::markThisArc(vector<ExtendedUnionFind *> &ufArray,
+     ExtendedUnionFind::makeUnion(
+       ufArray[curNodeId]->find(), ufArray[parentNodeId]->find())
+       ->setOrigin(oldSegmentationSize + curSegmenSize);
+-    // cout << "Union on " << getNode(parentNodeId)->getVertexId();
+-    // cout << " from " << getNode(curNodeId)->getVertexId() << endl;
++    // std::cout << "Union on " << getNode(parentNodeId)->getVertexId();
++    // std::cout << " from " << getNode(curNodeId)->getVertexId() << std::endl;
+   }
+ 
+   // The last parentNode is the root of the subtree
+-  // cout << "for " << getNode(curNodeId)->getVertexId() << " set root " <<
+-  // getNode(parentNodeId)->getVertexId() << endl;
++  // std::cout << "for " << getNode(curNodeId)->getVertexId() << " set root " <<
++  // getNode(parentNodeId)->getVertexId() << std::endl;
+   ufArray[parentNodeId]->find()->setData(-((ufDataType)parentNodeId) - 1);
+ }
+ 
+@@ -1114,8 +1114,8 @@ idSuperArc MergeTree::newUpArc(const idNode &curNodeId,
+     }
+   }
+ 
+-  // cout << "node " << getNode(curNodeId)->getVertexId() << " have no up arc to
+-  // take" << endl;
++  // std::cout << "node " << getNode(curNodeId)->getVertexId() << " have no up arc to
++  // take" << std::endl;
+   return keepArc;
+ }
+ 
+@@ -1138,8 +1138,8 @@ idSuperArc MergeTree::newDownArc(const idNode &curNodeId,
+     }
+   }
+ 
+-  // cout << "node " << printNode(curNodeId) << " have no down arc to take" <<
+-  // endl;
++  // std::cout << "node " << printNode(curNodeId) << " have no down arc to take" <<
++  // std::endl;
+   return keepArc;
+ }
+ 
+@@ -1156,14 +1156,14 @@ tuple<idNode, idNode, SimplexId> MergeTree::createReceptArc(
+   idNode upNode = root;
+ 
+   if(DEBUG) {
+-    cout << " create receptarc for root : " << printNode(root) << endl;
+-    cout << " custom valence : " << valenceOffsets[root].first;
+-    cout << " + " << valenceOffsets[root].second << endl;
++    std::cout << " create receptarc for root : " << printNode(root) << std::endl;
++    std::cout << " custom valence : " << valenceOffsets[root].first;
++    std::cout << " + " << valenceOffsets[root].second << std::endl;
+   }
+ 
+   // descend in the tree until valence is not 2
+   SimplexId segmentationSize = ufRoot->find()->getOrigin();
+-  // cout << "init size " << segmentationSize << endl;
++  // std::cout << "init size " << segmentationSize << std::endl;
+ 
+   // We need a valence of 2 (we don't want to cross a futur saddle
+   // But we want to avoid up && down = root
+@@ -1184,8 +1184,8 @@ tuple<idNode, idNode, SimplexId> MergeTree::createReceptArc(
+     const idNode tmpUp = getSuperArc(downArc)->getUpNodeId();
+ 
+     if(DEBUG) {
+-      cout << "change down to " << getNode(downNode)->getVertexId() << endl;
+-      cout << " new segmentation : " << segmentationSize << endl;
++      std::cout << "change down to " << getNode(downNode)->getVertexId() << std::endl;
++      std::cout << " new segmentation : " << segmentationSize << std::endl;
+     }
+ 
+     // UF
+@@ -1203,9 +1203,9 @@ tuple<idNode, idNode, SimplexId> MergeTree::createReceptArc(
+   }
+ 
+   if(DEBUG) {
+-    cout << " continue receptarc for root : " << printNode(root) << endl;
+-    cout << " custom valence : " << valenceOffsets[root].first;
+-    cout << " + " << valenceOffsets[root].second << endl;
++    std::cout << " continue receptarc for root : " << printNode(root) << std::endl;
++    std::cout << " custom valence : " << valenceOffsets[root].first;
++    std::cout << " + " << valenceOffsets[root].second << std::endl;
+   }
+ 
+   // for a node to be regular, it must have a down valence = 1 but
+@@ -1222,8 +1222,8 @@ tuple<idNode, idNode, SimplexId> MergeTree::createReceptArc(
+     const idNode tmpDown = getSuperArc(upArc)->getDownNodeId();
+ 
+     if(DEBUG) {
+-      cout << "change up to " << getNode(upNode)->getVertexId() << endl;
+-      cout << " new segmentation : " << segmentationSize << endl;
++      std::cout << "change up to " << getNode(upNode)->getVertexId() << std::endl;
++      std::cout << " new segmentation : " << segmentationSize << std::endl;
+     }
+ 
+     if(ufArray[upNode]) {
+@@ -1272,7 +1272,7 @@ tuple<idNode, idNode, SimplexId> MergeTree::createReceptArc(
+     if(tmpUp != nullSuperArc)
+       segmentationSize += getSuperArc(tmpUp)->getVertSize() + 2;
+ 
+-    // cout << " special : new segmentation : " << segmentationSize << endl;
++    // std::cout << " special : new segmentation : " << segmentationSize << std::endl;
+   }
+ 
+   return make_tuple(downNode, upNode, segmentationSize);
+diff --git a/core/base/contourForestsTree/MergeTreeTemplate.h b/core/base/contourForestsTree/MergeTreeTemplate.h
+index 1f7eaa0878..8eb14d06f7 100644
+--- a/core/base/contourForestsTree/MergeTreeTemplate.h
++++ b/core/base/contourForestsTree/MergeTreeTemplate.h
+@@ -1043,8 +1043,8 @@ namespace ttk {
+ 
+       // SimplexId test = 1;
+       // if (currentVertex == test)
+-      // cout << test << " : " << vect_neighUF.size() << " " <<
+-      // vect_interfaceUF.size() << endl; Make output
++      // std::cout << test << " : " << vect_neighUF.size() << " " <<
++      // vect_interfaceUF.size() << std::endl; Make output
+       if(!neighSize) {
+         // we are on a real extrema we have to create a new UNION FIND and a
+         // branch a real extrema can't be a virtual extrema
+@@ -1060,7 +1060,7 @@ namespace ttk {
+         currentNode = makeNode(currentVertex);
+         getNode(currentNode)->setOrigin(currentNode);
+         currentArc = openSuperArc(currentNode, overlapB, overlapA);
+-        // if(overlap && partition_ == 1) cout << currentVertex << endl;
++        // if(overlap && partition_ == 1) std::cout << currentVertex << std::endl;
+         treeData_.leaves.emplace_back(currentNode);
+ 
+         if(params_->debugLevel >= static_cast<int>(debug::Priority::DETAIL)) {
+@@ -1092,9 +1092,9 @@ namespace ttk {
+           // For the one who will continue, it will be override later
+           vertex2Node(neigh->find()->getOrigin())->setTermination(closingNode);
+ 
+-          // cout <<
++          // std::cout <<
+           // getNode(getCorrespondingNode(neigh->find()->getOrigin()))->getVertexId()
+-          //<< " terminate on " << getNode(closingNode)->getVertexId() << endl;
++          //<< " terminate on " << getNode(closingNode)->getVertexId() << std::endl;
+ 
+           if((isJT && isLower(neigh->find()->getOrigin(), farOrigin))
+              || (!isJT && isHigher(neigh->find()->getOrigin(), farOrigin))) {
+@@ -1103,9 +1103,9 @@ namespace ttk {
+             // current leaf (or is the root) It might be not intuitive but it is
+             // more convenient for degenerate cases
+             farOrigin = neigh->find()->getOrigin();
+-            // cout << "find origin  " << farOrigin << " for " << currentVertex
++            // std::cout << "find origin  " << farOrigin << " for " << currentVertex
+             // << " " << isJT
+-            //<< endl;
++            //<< std::endl;
+           }
+         }
+ 
+@@ -1117,9 +1117,9 @@ namespace ttk {
+         seed->setOrigin(farOrigin);
+         getNode(closingNode)->setOrigin(getCorrespondingNodeId(farOrigin));
+ 
+-        // cout << "  " << getNode(closingNode)->getVertexId() << " have origin
++        // std::cout << "  " << getNode(closingNode)->getVertexId() << " have origin
+         // at "
+-        //<< getNode(getCorrespondingNode(farOrigin))->getVertexId() << endl;
++        //<< getNode(getCorrespondingNode(farOrigin))->getVertexId() << std::endl;
+ 
+         this->printMsg("Saddle node id: " + std::to_string(currentVertex),
+                        debug::Priority::DETAIL);
+diff --git a/core/base/contourTree/ContourTree.cpp b/core/base/contourTree/ContourTree.cpp
+index 6895ed8528..30983e6ebc 100644
+--- a/core/base/contourTree/ContourTree.cpp
++++ b/core/base/contourTree/ContourTree.cpp
+@@ -488,7 +488,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] -= offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId);
+ 
+   v = (*vertexPositions_)[nodeList_[downNodeId].vertexId_];
+@@ -499,7 +499,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] += offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 1);
+ 
+   v = (*vertexPositions_)[nodeList_[downNodeId].vertexId_];
+@@ -510,7 +510,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] += offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 2);
+ 
+   v = (*vertexPositions_)[nodeList_[downNodeId].vertexId_];
+@@ -521,7 +521,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] -= offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 3);
+ 
+   v = (*vertexPositions_)[nodeList_[upNodeId].vertexId_];
+@@ -532,7 +532,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] -= offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 4);
+ 
+   v = (*vertexPositions_)[nodeList_[upNodeId].vertexId_];
+@@ -543,7 +543,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] += offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 5);
+ 
+   v = (*vertexPositions_)[nodeList_[upNodeId].vertexId_];
+@@ -554,7 +554,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] += offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 6);
+ 
+   v = (*vertexPositions_)[nodeList_[upNodeId].vertexId_];
+@@ -565,7 +565,7 @@ int SubLevelSetTree::exportArcPosToVtk(const int &arcId,
+   }
+   v[0] -= offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 7);
+ 
+   return 0;
+@@ -633,7 +633,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] -= offset;
+   v[1] -= offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -645,7 +645,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] += offset;
+   v[1] -= offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 1);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -657,7 +657,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] += offset;
+   v[1] += offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 2);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -669,7 +669,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] -= offset;
+   v[1] += offset;
+   v[2] -= offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 3);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -681,7 +681,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] -= offset;
+   v[1] -= offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 4);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -693,7 +693,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] += offset;
+   v[1] -= offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 5);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -705,7 +705,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] += offset;
+   v[1] += offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 6);
+ 
+   v = (*vertexPositions_)[nodeList_[nodeId].vertexId_];
+@@ -717,7 +717,7 @@ int SubLevelSetTree::exportNodePosToVtk(const int &nodeId,
+   v[0] -= offset;
+   v[1] += offset;
+   v[2] += offset;
+-  o << v[0] << " " << v[1] << " " << v[2] << endl;
++  o << v[0] << " " << v[1] << " " << v[2] << std::endl;
+   vertexIds.push_back(pointId + 7);
+ 
+   return 0;
+@@ -737,7 +737,7 @@ int SubLevelSetTree::exportPersistenceCurve(const string &fileName) const {
+   for(int i = 0; i < (int)persistencePlot.size(); i++) {
+ 
+     file << setprecision(REAL_SIGNIFICANT_DIGITS) << persistencePlot[i].first
+-         << " " << persistencePlot[i].second << endl;
++         << " " << persistencePlot[i].second << std::endl;
+   }
+ 
+   file.close();
+@@ -759,11 +759,11 @@ int SubLevelSetTree::exportPersistenceDiagram(const string &fileName) const {
+ 
+   for(int i = 0; i < (int)diagram.size(); i++) {
+     file << setprecision(REAL_SIGNIFICANT_DIGITS) << diagram[i].first << " "
+-         << diagram[i].first << endl;
++         << diagram[i].first << std::endl;
+     file << setprecision(REAL_SIGNIFICANT_DIGITS) << diagram[i].first << " "
+-         << diagram[i].second << endl;
++         << diagram[i].second << std::endl;
+     file << setprecision(REAL_SIGNIFICANT_DIGITS) << diagram[i].first << " "
+-         << diagram[i].first << endl;
++         << diagram[i].first << std::endl;
+   }
+ 
+   file.close();
+@@ -839,7 +839,7 @@ int SubLevelSetTree::exportToSvg(const string &fileName,
+     dotFile << "Join";
+   else
+     dotFile << "Split";
+-  dotFile << " Tree\"{" << endl;
++  dotFile << " Tree\"{" << std::endl;
+ 
+   double minValue = 0, maxValue = 0;
+   for(int i = 0; i < (int)vertexScalars_->size(); i++) {
+@@ -878,7 +878,7 @@ int SubLevelSetTree::exportToSvg(const string &fileName,
+                 << (*vertexPositions_)[nodeList_[upNodeId].vertexId_][1] << " "
+                 << (*vertexPositions_)[nodeList_[upNodeId].vertexId_][2] << ")";
+       }
+-      dotFile << "\"" << endl;
++      dotFile << "\"" << std::endl;
+     }
+   }
+ 
+@@ -937,12 +937,12 @@ int SubLevelSetTree::exportToSvg(const string &fileName,
+ 
+         dotFile << "]";
+ 
+-        dotFile << endl;
++        dotFile << std::endl;
+       }
+     }
+   }
+ 
+-  dotFile << "}" << endl;
++  dotFile << "}" << std::endl;
+ 
+   dotFile.close();
+ 
+@@ -1003,15 +1003,15 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+   vector<vector<int>> nodeIds(nodeList_.size());
+   vector<vector<int>> arcIds(superArcList_.size());
+ 
+-  o << "<?xml version=\"1.0\"?>" << endl;
++  o << "<?xml version=\"1.0\"?>" << std::endl;
+   o << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\""
+-    << " byte_order=\"LittleEndian\">" << endl;
+-  o << "  <UnstructuredGrid>" << endl;
++    << " byte_order=\"LittleEndian\">" << std::endl;
++  o << "  <UnstructuredGrid>" << std::endl;
+   o << "    <Piece NumberOfPoints=\"" << pointNumber << "\" NumberOfCells=\""
+     << cellNumber << "\">";
+-  o << "      <PointData Scalars=\"Color Code\">" << endl;
++  o << "      <PointData Scalars=\"Color Code\">" << std::endl;
+   o << "        <DataArray type=\"Float32\" Name=\"Critical Color\""
+-    << " format=\"ascii\" NumberOfComponents=\"1\">" << endl;
++    << " format=\"ascii\" NumberOfComponents=\"1\">" << std::endl;
+ 
+   // node color
+   for(int i = 0; i < (int)superArcList_.size(); i++) {
+@@ -1022,13 +1022,13 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+       if(!nodeColorOut[downNodeId]) {
+         o << "          ";
+         exportNodeColorToVtk(downNodeId, o);
+-        o << endl;
++        o << std::endl;
+         nodeColorOut[downNodeId] = true;
+       }
+       if(!nodeColorOut[upNodeId]) {
+         o << "          ";
+         exportNodeColorToVtk(upNodeId, o);
+-        o << endl;
++        o << std::endl;
+         nodeColorOut[upNodeId] = true;
+       }
+     }
+@@ -1041,17 +1041,17 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+       for(int j = 0; j < 8; j++) {
+         o << "2 ";
+       }
+-      o << endl;
++      o << std::endl;
+     }
+   }
+-  o << "          </DataArray>" << endl;
+-  o << "        </PointData>" << endl;
++  o << "          </DataArray>" << std::endl;
++  o << "        </PointData>" << std::endl;
+ 
+   // node position
+ 
+-  o << "        <Points>" << endl;
++  o << "        <Points>" << std::endl;
+   o << "          <DataArray type=\"Float32\" NumberOfComponents=\"3\""
+-    << " format=\"ascii\">" << endl;
++    << " format=\"ascii\">" << std::endl;
+ 
+   int pointId = 0;
+   for(int i = 0; i < (int)superArcList_.size(); i++) {
+@@ -1064,7 +1064,7 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+         exportNodePosToVtk(
+           downNodeId, pointId, nodeIds[downNodeId], origin, voxelSize, o);
+         nodePosOut[downNodeId] = true;
+-        o << endl;
++        o << std::endl;
+         pointId += 8;
+       }
+       if(!nodePosOut[upNodeId]) {
+@@ -1072,7 +1072,7 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+         exportNodePosToVtk(
+           upNodeId, pointId, nodeIds[upNodeId], origin, voxelSize, o);
+         nodePosOut[upNodeId] = true;
+-        o << endl;
++        o << std::endl;
+         pointId += 8;
+       }
+     }
+@@ -1081,18 +1081,18 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+     if(!superArcList_[i].pruned_) {
+       o << "            ";
+       exportArcPosToVtk(i, pointId, arcIds[i], origin, voxelSize, o);
+-      o << endl;
++      o << std::endl;
+       pointId += 8;
+     }
+   }
+-  o << "          </DataArray>" << endl;
+-  o << "        </Points>" << endl;
++  o << "          </DataArray>" << std::endl;
++  o << "        </Points>" << std::endl;
+ 
+   // cells now
+-  o << "      <Cells>" << endl;
++  o << "      <Cells>" << std::endl;
+ 
+   o << "        <DataArray type=\"Int32\" Name=\"connectivity\""
+-    << " format=\"ascii\">" << endl;
++    << " format=\"ascii\">" << std::endl;
+ 
+   for(int i = 0; i < (int)superArcList_.size(); i++) {
+     if(!superArcList_[i].pruned_) {
+@@ -1104,14 +1104,14 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+           << nodeIds[downNodeId][1] << " " << nodeIds[downNodeId][2] << " "
+           << nodeIds[downNodeId][3] << " " << nodeIds[downNodeId][4] << " "
+           << nodeIds[downNodeId][5] << " " << nodeIds[downNodeId][6] << " "
+-          << nodeIds[downNodeId][7] << endl;
++          << nodeIds[downNodeId][7] << std::endl;
+         nodeMeshOut[downNodeId] = true;
+       }
+       if(!nodeMeshOut[upNodeId]) {
+         o << "        " << nodeIds[upNodeId][0] << " " << nodeIds[upNodeId][1]
+           << " " << nodeIds[upNodeId][2] << " " << nodeIds[upNodeId][3] << " "
+           << nodeIds[upNodeId][4] << " " << nodeIds[upNodeId][5] << " "
+-          << nodeIds[upNodeId][6] << " " << nodeIds[upNodeId][7] << endl;
++          << nodeIds[upNodeId][6] << " " << nodeIds[upNodeId][7] << std::endl;
+         nodeMeshOut[upNodeId] = true;
+       }
+     }
+@@ -1120,39 +1120,39 @@ int SubLevelSetTree::exportToVtk(const string &fileName,
+     if(!superArcList_[i].pruned_) {
+       o << "        " << arcIds[i][0] << " " << arcIds[i][1] << " "
+         << arcIds[i][2] << " " << arcIds[i][3] << " " << arcIds[i][4] << " "
+-        << arcIds[i][5] << " " << arcIds[i][6] << " " << arcIds[i][7] << endl;
++        << arcIds[i][5] << " " << arcIds[i][6] << " " << arcIds[i][7] << std::endl;
+     }
+   }
+ 
+-  o << "        </DataArray>" << endl;
++  o << "        </DataArray>" << std::endl;
+ 
+   o << "        <DataArray type=\"Int32\" Name=\"offsets\""
+-    << "  format=\"ascii\">" << endl;
++    << "  format=\"ascii\">" << std::endl;
+   pointId = 8;
+   for(int i = 0; i < nodeNumber; i++) {
+-    o << "        " << pointId << endl;
++    o << "        " << pointId << std::endl;
+     pointId += 8;
+   }
+   for(int i = 0; i < superArcNumber; i++) {
+-    o << "        " << pointId << endl;
++    o << "        " << pointId << std::endl;
+     pointId += 8;
+   }
+-  o << "        </DataArray>" << endl;
++  o << "        </DataArray>" << std::endl;
+ 
+   o << "        <DataArray type=\"Int32\" Name=\"types\""
+-    << " format=\"ascii\">" << endl;
++    << " format=\"ascii\">" << std::endl;
+   for(int i = 0; i < nodeNumber; i++) {
+-    o << "          12" << endl;
++    o << "          12" << std::endl;
+   }
+   for(int i = 0; i < superArcNumber; i++) {
+-    o << "          12" << endl;
++    o << "          12" << std::endl;
+   }
+-  o << "        </DataArray>" << endl;
++  o << "        </DataArray>" << std::endl;
+ 
+-  o << "      </Cells>" << endl;
+-  o << "    </Piece>" << endl;
+-  o << "  </UnstructuredGrid>" << endl;
+-  o << "</VTKFile>" << endl;
++  o << "      </Cells>" << std::endl;
++  o << "    </Piece>" << std::endl;
++  o << "  </UnstructuredGrid>" << std::endl;
++  o << "</VTKFile>" << std::endl;
+   o.close();
+ 
+   return 0;
+diff --git a/core/base/ftmTree/FTMSegmentation.cpp b/core/base/ftmTree/FTMSegmentation.cpp
+index 9092b3d97e..f0387da6e8 100644
+--- a/core/base/ftmTree/FTMSegmentation.cpp
++++ b/core/base/ftmTree/FTMSegmentation.cpp
+@@ -117,7 +117,7 @@ Segment &Segments::operator[](const size_t &idx) {
+ void Segments::resize(const vector<SimplexId> &sizes) {
+ #ifndef TTK_ENABLE_KAMIKAZE
+   if(segments_.size()) {
+-    cerr << "Call reserve on an already reserved Segments! " << endl;
++    std::cerr << "Call reserve on an already reserved Segments! " << std::endl;
+   }
+ #endif
+ 
+@@ -173,7 +173,7 @@ void ArcRegion::concat(const ArcRegion &r) {
+ void ArcRegion::createSegmentation(const Scalars *s) {
+ #ifndef TTK_ENABLE_KAMIKAZE
+   if(segmentation_.size()) {
+-    cout << "createSegmentation called on an already segmented region" << endl;
++    std::cout << "createSegmentation called on an already segmented region" << std::endl;
+   }
+ #endif
+ 
+diff --git a/core/base/ftmTree/FTMTree_CT.cpp b/core/base/ftmTree/FTMTree_CT.cpp
+index 4d81b32bb5..32bcf2a883 100644
+--- a/core/base/ftmTree/FTMTree_CT.cpp
++++ b/core/base/ftmTree/FTMTree_CT.cpp
+@@ -64,8 +64,8 @@ int FTMTree_CT::combine() {
+   } // else can't clone, not same up and down
+ 
+   if(DEBUG) {
+-    cout << "growingNodes : " << growingNodes.size()
+-         << " in : " << stepTime.getElapsedTime() << endl;
++    std::cout << "growingNodes : " << growingNodes.size()
++         << " in : " << stepTime.getElapsedTime() << std::endl;
+   }
+ 
+   // Warning, have a reserve here, can't make it at the begnining, need build
+@@ -75,7 +75,7 @@ int FTMTree_CT::combine() {
+   mt_data_.nodes->reserve(jt_.getNumberOfNodes());
+ 
+   if(growingNodes.empty()) {
+-    cout << "[FTMTree_CT::combine ] Nothing to combine" << endl;
++    std::cout << "[FTMTree_CT::combine ] Nothing to combine" << std::endl;
+   }
+ 
+ #ifdef TTK_ENABLE_FTM_TREE_DUAL_QUEUE_COMBINE
+@@ -97,8 +97,8 @@ int FTMTree_CT::combine() {
+       if(xt->getNode(currentNodeId)->getNumberOfUpSuperArcs() == 1) {
+         growingNodes.emplace(isJT, currentNodeId);
+         if(DEBUG) {
+-          cout << "repush in growing:" << isJT
+-               << "::" << xt->printNode(currentNodeId) << endl;
++          std::cout << "repush in growing:" << isJT
++               << "::" << xt->printNode(currentNodeId) << std::endl;
+         }
+       }
+     }
+@@ -123,17 +123,17 @@ int FTMTree_CT::combine() {
+ 
+       if(DEBUG) {
+         if(xt == &jt_)
+-          cout << endl << "JT ";
++          std::cout << std::endl << "JT ";
+         else
+-          cout << endl << "ST ";
+-        cout << "node : " << currentNode->getVertexId() << endl;
++          std::cout << std::endl << "ST ";
++        std::cout << "node : " << currentNode->getVertexId() << std::endl;
+       }
+ 
+       // "choose a non-root leaf that is not a split in ST" so we ignore such
+       // nodes
+       if(currentNode->getNumberOfUpSuperArcs() == 0) {
+         if(DEBUG) {
+-          cout << " ignore already processed" << endl;
++          std::cout << " ignore already processed" << std::endl;
+         }
+         continue;
+       }
+@@ -143,10 +143,10 @@ int FTMTree_CT::combine() {
+ 
+       if(yt->getNode(correspondingNodeId)->getNumberOfDownSuperArcs() > 1) {
+         if(DEBUG) {
+-          cout << "put remain:" << isJT << "::" << xt->printNode(currentNodeId)
+-               << endl;
+-          cout << " which is in yt : " << yt->printNode(correspondingNodeId)
+-               << endl;
++          std::cout << "put remain:" << isJT << "::" << xt->printNode(currentNodeId)
++               << std::endl;
++          std::cout << " which is in yt : " << yt->printNode(correspondingNodeId)
++               << std::endl;
+         }
+ #ifdef TTK_ENABLE_FTM_TREE_DUAL_QUEUE_COMBINE
+         remainingNodes.emplace(isJT, currentNodeId);
+@@ -180,7 +180,7 @@ int FTMTree_CT::combine() {
+       const Node *parentNode = xt->getNode(parentId);
+ 
+       if(DEBUG) {
+-        cout << " parent node :" << parentNode->getVertexId() << endl;
++        std::cout << " parent node :" << parentNode->getVertexId() << std::endl;
+       }
+ 
+       SimplexId const parVert = parentNode->getVertexId();
+@@ -216,7 +216,7 @@ int FTMTree_CT::combine() {
+       }
+ 
+       if(DEBUG) {
+-        cout << "create arc : " << printArc(createdArc) << endl;
++        std::cout << "create arc : " << printArc(createdArc) << std::endl;
+       }
+ 
+       // DEL NODES
+@@ -224,8 +224,8 @@ int FTMTree_CT::combine() {
+       // DelNode(XT, i)
+       {
+         if(DEBUG) {
+-          cout << " delete xt (" << (xt == &jt_) << ") ";
+-          cout << "node :" << xt->printNode(currentNodeId) << endl;
++          std::cout << " delete xt (" << (xt == &jt_) << ") ";
++          std::cout << "node :" << xt->printNode(currentNodeId) << std::endl;
+         }
+ 
+         xt->delNode(currentNodeId);
+@@ -234,8 +234,8 @@ int FTMTree_CT::combine() {
+       // DelNode(YT, i)
+       {
+         if(DEBUG) {
+-          cout << " delete yt (" << isJT << ") node :";
+-          cout << yt->printNode(correspondingNodeId) << endl;
++          std::cout << " delete yt (" << isJT << ") node :";
++          std::cout << yt->printNode(correspondingNodeId) << std::endl;
+         }
+ 
+         yt->delNode(correspondingNodeId);
+@@ -248,7 +248,7 @@ int FTMTree_CT::combine() {
+         growingNodes.emplace(isJT, parentId);
+ 
+         if(DEBUG) {
+-          cout << "will see : " << parentNode->getVertexId() << endl;
++          std::cout << "will see : " << parentNode->getVertexId() << std::endl;
+         }
+       }
+     }
+diff --git a/core/base/ftmTree/FTMTree_MT.cpp b/core/base/ftmTree/FTMTree_MT.cpp
+index 44a1097fda..c3379b04b5 100644
+--- a/core/base/ftmTree/FTMTree_MT.cpp
++++ b/core/base/ftmTree/FTMTree_MT.cpp
+@@ -272,12 +272,12 @@ void FTMTree_MT::closeSuperArc(idSuperArc superArcId, idNode upNodeId) {
+ #ifndef TTK_ENABLE_KAMIKAZE
+ 
+   if(superArcId >= getNumberOfSuperArcs()) {
+-    cout << "[Merge Tree] closeSuperArc on a inexisting arc !" << endl;
++    std::cout << "[Merge Tree] closeSuperArc on a inexisting arc !" << std::endl;
+     return;
+   }
+ 
+   if(upNodeId >= getNumberOfNodes()) {
+-    cout << "[Merge Tree] closeOpenedArc on a inexisting node !" << endl;
++    std::cout << "[Merge Tree] closeOpenedArc on a inexisting node !" << std::endl;
+     return;
+   }
+ 
+@@ -295,11 +295,11 @@ void FTMTree_MT::delNode(idNode node) {
+ #ifndef TTK_ENABLE_KAMIKAZE
+     if(mainNode->getNumberOfDownSuperArcs() != 1) {
+       // Root with several children: impossible /\ .
+-      cout << endl << "[FTMTree_MT]:delNode won't delete ";
+-      cout << mainNode->getVertexId() << " (root) with ";
+-      cout << static_cast<unsigned>(mainNode->getNumberOfDownSuperArcs())
++      std::cout << std::endl << "[FTMTree_MT]:delNode won't delete ";
++      std::cout << mainNode->getVertexId() << " (root) with ";
++      std::cout << static_cast<unsigned>(mainNode->getNumberOfDownSuperArcs())
+            << " down ";
+-      cout << static_cast<unsigned>(mainNode->getNumberOfUpSuperArcs())
++      std::cout << static_cast<unsigned>(mainNode->getNumberOfUpSuperArcs())
+            << " up ";
+       return;
+     }
+@@ -339,7 +339,7 @@ void FTMTree_MT::delNode(idNode node) {
+   }
+ #ifndef TTK_ENABLE_KAMIKAZE
+   else
+-    cerr << "delete node with multiple childrens " << endl;
++    std::cerr << "delete node with multiple childrens " << std::endl;
+ #endif
+ }
+ 
+@@ -745,25 +745,25 @@ void FTMTree_MT::printTree2() {
+ #pragma omp critical
+ #endif
+   {
+-    cout << "Nodes----------" << endl;
++    std::cout << "Nodes----------" << std::endl;
+     for(idNode nid = 0; nid < getNumberOfNodes(); nid++) {
+-      cout << printNode(nid) << endl;
++      std::cout << printNode(nid) << std::endl;
+     }
+ 
+-    cout << "Arcs-----------" << endl;
++    std::cout << "Arcs-----------" << std::endl;
+     for(idSuperArc said = 0; said < getNumberOfSuperArcs(); ++said) {
+-      cout << printArc(said) << endl;
++      std::cout << printArc(said) << std::endl;
+     }
+ 
+-    cout << "Leaves" << endl;
++    std::cout << "Leaves" << std::endl;
+     for(const auto &l : mt_data_.leaves)
+-      cout << " " << (*mt_data_.nodes)[l].getVertexId();
+-    cout << endl;
++      std::cout << " " << (*mt_data_.nodes)[l].getVertexId();
++    std::cout << std::endl;
+ 
+-    cout << "Roots" << endl;
++    std::cout << "Roots" << std::endl;
+     for(const auto &r : *mt_data_.roots)
+-      cout << " " << (*mt_data_.nodes)[r].getVertexId();
+-    cout << endl;
++      std::cout << " " << (*mt_data_.nodes)[r].getVertexId();
++    std::cout << std::endl;
+   }
+ }
+ 
+diff --git a/core/base/ftrGraph/Graph.cpp b/core/base/ftrGraph/Graph.cpp
+index 4353fb843f..8cf4b1548f 100644
+--- a/core/base/ftrGraph/Graph.cpp
++++ b/core/base/ftrGraph/Graph.cpp
+@@ -14,34 +14,34 @@ Graph::~Graph() = default;
+ std::string Graph::print(const int verbosity) const {
+   stringstream res;
+   if(verbosity >= 1) {
+-    res << "Graph:" << endl;
+-    res << "leaves: " << leaves_.size() << endl;
+-    res << "nodes: " << nodes_.size() << endl;
+-    res << "arcs: " << arcs_.size() << endl;
++    res << "Graph:" << std::endl;
++    res << "leaves: " << leaves_.size() << std::endl;
++    res << "nodes: " << nodes_.size() << std::endl;
++    res << "arcs: " << arcs_.size() << std::endl;
+   }
+ 
+   if(verbosity >= 2) {
+-    res << "visible arcs: " << getNumberOfVisibleArcs() << endl;
++    res << "visible arcs: " << getNumberOfVisibleArcs() << std::endl;
+   }
+ 
+   if(verbosity >= 3) {
+-    res << "Leaves: " << endl;
++    res << "Leaves: " << std::endl;
+     for(const auto &v : leaves_) {
+       res << get<0>(v) << " ";
+     }
+-    res << endl;
++    res << std::endl;
+   }
+ 
+   if(verbosity >= 4) {
+-    res << "Nodes:" << endl;
++    res << "Nodes:" << std::endl;
+     const idNode nbn = nodes_.size();
+     for(idNode i = 0; i < nbn; ++i) {
+-      res << printNode(i) << endl;
++      res << printNode(i) << std::endl;
+     }
+-    res << "Arcs:" << endl;
++    res << "Arcs:" << std::endl;
+     const idSuperArc nba = arcs_.size();
+     for(idSuperArc i = 0; i < nba; ++i) {
+-      res << printArc(i) << endl;
++      res << printArc(i) << std::endl;
+     }
+   }
+ 
+diff --git a/core/base/persistenceDiagramClustering/PDClustering.h b/core/base/persistenceDiagramClustering/PDClustering.h
+index 40be499601..cd254ab877 100644
+--- a/core/base/persistenceDiagramClustering/PDClustering.h
++++ b/core/base/persistenceDiagramClustering/PDClustering.h
+@@ -224,7 +224,7 @@ namespace ttk {
+           }
+         }
+       }
+-      // cout<<msg.str()<<endl;
++      // std::cout<<msg.str()<<std::endl;
+     }
+ 
+     inline void printOldClustering() {
+diff --git a/core/base/persistenceDiagramClustering/PersistenceDiagramClustering.cpp b/core/base/persistenceDiagramClustering/PersistenceDiagramClustering.cpp
+index 825eba5ae1..66c0186602 100644
+--- a/core/base/persistenceDiagramClustering/PersistenceDiagramClustering.cpp
++++ b/core/base/persistenceDiagramClustering/PersistenceDiagramClustering.cpp
+@@ -172,7 +172,7 @@ std::vector<int> ttk::PersistenceDiagramClustering::execute(
+           } else {
+             std::get<0>(t) = data_min_idx[i][bidder_id];
+           }
+-          // cout<<" IDS :  "<<bidder_id<<" "<<std::get<0>(t)<<endl;
++          // std::cout<<" IDS :  "<<bidder_id<<" "<<std::get<0>(t)<<std::endl;
+           if(std::get<1>(t) < 0) {
+             std::get<1>(t) = -1;
+           }
+diff --git a/core/base/reebSpace/ReebSpace.cpp b/core/base/reebSpace/ReebSpace.cpp
+index 93f453a280..60731e70b1 100644
+--- a/core/base/reebSpace/ReebSpace.cpp
++++ b/core/base/reebSpace/ReebSpace.cpp
+@@ -620,8 +620,8 @@ int ttk::ReebSpace::printConnectivity(const ReebSpaceData &data) const {
+ //       << " tets) triangulated in "
+ //       << t.getElapsedTime() << " s. ("
+ //       << threadNumber_
+-//       << " thread(s))" << endl;
+-//     dMsg(cout, msg.str(), timeMsg);
++//       << " thread(s))" << std::endl;
++//     dMsg(std::cout, msg.str(), timeMsg);
+ //   }
+ //
+ //   return 0;
+diff --git a/core/vtk/ttkAlgorithm/ttkAlgorithm.cpp b/core/vtk/ttkAlgorithm/ttkAlgorithm.cpp
+index 8eeb272a4a..9e0cd74150 100644
+--- a/core/vtk/ttkAlgorithm/ttkAlgorithm.cpp
++++ b/core/vtk/ttkAlgorithm/ttkAlgorithm.cpp
+@@ -1016,7 +1016,7 @@ int ttkAlgorithm::ProcessRequest(vtkInformation *request,
+   }
+ 
+   this->printErr("Unsupported pipeline pass:");
+-  request->Print(cout);
++  request->Print(std::cout);
+ 
+   return 0;
+ }
+diff --git a/core/vtk/ttkAlgorithm/ttkUtils.cpp b/core/vtk/ttkAlgorithm/ttkUtils.cpp
+index 337802726a..82db2a8620 100644
+--- a/core/vtk/ttkAlgorithm/ttkUtils.cpp
++++ b/core/vtk/ttkAlgorithm/ttkUtils.cpp
+@@ -12,6 +12,8 @@
+ #include <vtkStringArray.h>
+ #include <vtkUnstructuredGrid.h>
+ 
++#include <iostream>
++
+ #ifdef TTK_ENABLE_MPI_TIME
+ #include <mpi.h>
+ #endif
+@@ -285,7 +287,7 @@ void ttkUtils::SetVoidArray(vtkDataArray *array,
+     vtkTemplateMacro(
+       auto *aosArray = vtkAOSDataArrayTemplate<VTK_TT>::FastDownCast(array);
+       if(aosArray) { aosArray->SetVoidArray(data, size, save); } else {
+-        std::cerr << "SetVoidArray on incompatible vtkDataArray:" << endl;
++        std::cerr << "SetVoidArray on incompatible vtkDataArray:" << std::endl;
+         array->Print(std::cerr);
+       });
+   }
+diff --git a/core/vtk/ttkCinemaWriter/ttkCinemaWriter.cpp b/core/vtk/ttkCinemaWriter/ttkCinemaWriter.cpp
+index d066d2888f..8bb730d370 100644
+--- a/core/vtk/ttkCinemaWriter/ttkCinemaWriter.cpp
++++ b/core/vtk/ttkCinemaWriter/ttkCinemaWriter.cpp
+@@ -270,7 +270,7 @@ int ttkCinemaWriter::ProcessDataProduct(vtkDataObject *input) {
+       header += "FILE";
+       firstRow += rDataProductPath;
+ 
+-      csvFile << header << endl << firstRow << endl;
++      csvFile << header << std::endl << firstRow << std::endl;
+ 
+       // Close file
+       csvFile.close();
+diff --git a/core/vtk/ttkContourForests/ttkContourForests.cpp b/core/vtk/ttkContourForests/ttkContourForests.cpp
+index 54eab871ec..fb88e1b306 100644
+--- a/core/vtk/ttkContourForests/ttkContourForests.cpp
++++ b/core/vtk/ttkContourForests/ttkContourForests.cpp
+@@ -461,9 +461,9 @@ void ttkContourForests::getSkeletonArcs() {
+         }
+       }
+     } else {
+-      // cout << " pruned _ :" <<
++      // std::cout << " pruned _ :" <<
+       // tree_->getNode(a->getDownNodeId())->getVertexId() << " -  "
+-      //<< tree_->getNode(a->getUpNodeId())->getVertexId() << endl;
++      //<< tree_->getNode(a->getUpNodeId())->getVertexId() << std::endl;
+     }
+   }
+ 
+@@ -688,11 +688,11 @@ void ttkContourForests::getCriticalPoints() {
+   }
+   //{
+   // stringstream msg;
+-  // msg << "[ttkContourForests] List of critical points :" << endl;
++  // msg << "[ttkContourForests] List of critical points :" << std::endl;
+   // for (unsigned int it = 0; it < criticalPoints_->size(); ++it)
+   // msg << "[ttkContourForests]   NodeId:" << (*criticalPoints_)[it]
+-  //<< ", VertexId:" << tree_->getNode(it)->getVertexId() << endl;
+-  // dMsg(cout, msg.str(), advancedInfoMsg);
++  //<< ", VertexId:" << tree_->getNode(it)->getVertexId() << std::endl;
++  // dMsg(std::cout, msg.str(), advancedInfoMsg);
+   //}
+ }
+ 
+@@ -979,15 +979,15 @@ void ttkContourForests::getSegmentation(vtkDataSet *input) {
+       regionId = currentZone++;
+       // regionId = i;
+ 
+-      // cout << "arc : " << tree_->printArc(i);
+-      // cout << " span : " << regionSpan;
+-      // cout << " coords : ";
+-      // cout << coordDown[0] << ",";
+-      // cout << coordDown[1] << ",";
+-      // cout << coordDown[2] << " || ";
+-      // cout << coordUp[0] << ",";
+-      // cout << coordUp[1] << ",";
+-      // cout << coordUp[2] << endl;
++      // std::cout << "arc : " << tree_->printArc(i);
++      // std::cout << " span : " << regionSpan;
++      // std::cout << " coords : ";
++      // std::cout << coordDown[0] << ",";
++      // std::cout << coordDown[1] << ",";
++      // std::cout << coordDown[2] << " || ";
++      // std::cout << coordUp[0] << ",";
++      // std::cout << coordUp[1] << ",";
++      // std::cout << coordUp[2] << std::endl;
+ 
+       scalarsRegionId->SetTuple1(
+         tree_->getNode(downNodeId)->getVertexId(), regionId);
+@@ -1008,18 +1008,18 @@ void ttkContourForests::getSegmentation(vtkDataSet *input) {
+           ++j) {
+         SimplexId const nodeId = tree_->getSuperArc(i)->getRegularNodeId(j);
+         SimplexId const vertexId = nodeId;
+-        // cout << vertexId << ", ";
++        // std::cout << vertexId << ", ";
+         if(tree_->getSuperArc(i)->isMasqued(j)) {
+-          // cout << vertexId << ", ";
++          // std::cout << vertexId << ", ";
+           continue;
+         }
+ 
+-        // cout << vertexId << ", ";
++        // std::cout << vertexId << ", ";
+         scalarsRegionId->SetTuple1(vertexId, regionId);
+         scalarsRegionSize->SetTuple1(vertexId, regionSize);
+         scalarsRegionSpan->SetTuple1(vertexId, regionSpan);
+       }
+-      // cout << endl;
++      // std::cout << std::endl;
+ 
+       // RegionType
+       if((upNodeType == CriticalType::Local_minimum
+diff --git a/core/vtk/ttkMergeTree/ttkMergeTreeBase.cpp b/core/vtk/ttkMergeTree/ttkMergeTreeBase.cpp
+index 4d81474e86..958b2ffec6 100644
+--- a/core/vtk/ttkMergeTree/ttkMergeTreeBase.cpp
++++ b/core/vtk/ttkMergeTree/ttkMergeTreeBase.cpp
+@@ -289,9 +289,9 @@ int ttkMergeTreeBase::getSkeletonArcs(vtkUnstructuredGrid *outputSkeletonArcs) {
+ 
+   // const SimplexId p_size = points->GetNumberOfPoints();
+   // const SimplexId s_size = tree->getNumberOfVertices();
+-  // cout << "arcs points " << p_size << endl;
+-  // cout << "scal points " << s_size << endl;
+-  // cout << "nb arcs     " << tree->getNumberOfSuperArcs()<< endl;
++  // std::cout << "arcs points " << p_size << std::endl;
++  // std::cout << "scal points " << s_size << std::endl;
++  // std::cout << "nb arcs     " << tree->getNumberOfSuperArcs()<< std::endl;
+   // if(p_size != s_size){
+   //    exit(3);
+   // }
+@@ -358,17 +358,17 @@ void ttkMergeTreeBase::printCSVStats() {
+   for(auto &t : ftmTree_) {
+     switch(GetTreeType()) {
+       case ftm::TreeType::Join:
+-        cout << "JT" << endl;
++        std::cout << "JT" << std::endl;
+         printCSVTree(t.tree.getTree(ftm::TreeType::Join));
+         break;
+       case ftm::TreeType::Split:
+-        cout << "ST" << endl;
++        std::cout << "ST" << std::endl;
+         printCSVTree(t.tree.getTree(ftm::TreeType::Split));
+         break;
+       default:
+-        cout << "JT" << endl;
++        std::cout << "JT" << std::endl;
+         printCSVTree(t.tree.getTree(ftm::TreeType::Join));
+-        cout << "ST" << endl;
++        std::cout << "ST" << std::endl;
+         printCSVTree(t.tree.getTree(ftm::TreeType::Split));
+         break;
+     }
+@@ -380,19 +380,19 @@ void ttkMergeTreeBase::printCSVTree(
+   using namespace ttk::ftm;
+ 
+   const idSuperArc nbArc = tree->getNumberOfLeaves();
+-  cout << "begin; ";
++  std::cout << "begin; ";
+   for(idSuperArc a = 0; a < nbArc; a++) {
+-    cout << tree->getActiveTasks(a).begin << "; ";
++    std::cout << tree->getActiveTasks(a).begin << "; ";
+   }
+-  cout << endl << "end; ";
++  std::cout << std::endl << "end; ";
+   for(idSuperArc a = 0; a < nbArc; a++) {
+-    cout << tree->getActiveTasks(a).end << "; ";
++    std::cout << tree->getActiveTasks(a).end << "; ";
+   }
+-  cout << endl << "origing; ";
++  std::cout << std::endl << "origing; ";
+   for(idSuperArc a = 0; a < nbArc; a++) {
+-    cout << tree->getActiveTasks(a).origin << "; ";
++    std::cout << tree->getActiveTasks(a).origin << "; ";
+   }
+-  cout << endl;
++  std::cout << std::endl;
+ }
+ #endif
+ 
+diff --git a/core/vtk/ttkProgramBase/ttkProgramBase.cpp b/core/vtk/ttkProgramBase/ttkProgramBase.cpp
+index 6066313ce3..22356c8e65 100644
+--- a/core/vtk/ttkProgramBase/ttkProgramBase.cpp
++++ b/core/vtk/ttkProgramBase/ttkProgramBase.cpp
+@@ -37,7 +37,7 @@ int ttkProgramBase::load(const std::vector<std::string> &inputPaths) {
+     } else {
+       stringstream msg;
+       msg << "[ttkProgramBase] Unknown input extension `" << extension << "' :("
+-          << endl;
++          << std::endl;
+       printErr(msg.str());
+       return -1;
+     }
+diff --git a/core/vtk/ttkUserInterfaceBase/ttkUserInterfaceBase.cpp b/core/vtk/ttkUserInterfaceBase/ttkUserInterfaceBase.cpp
+index e3ee06e7dd..8a5301d98d 100644
+--- a/core/vtk/ttkUserInterfaceBase/ttkUserInterfaceBase.cpp
++++ b/core/vtk/ttkUserInterfaceBase/ttkUserInterfaceBase.cpp
+@@ -189,7 +189,7 @@ int ttkUserInterfaceBase::run() {
+ 
+   {
+     stringstream msg;
+-    msg << "[UserInterface] Initializing user interface..." << endl;
++    msg << "[UserInterface] Initializing user interface..." << std::endl;
+     printMsg(msg.str());
+   }
+ 
+@@ -214,7 +214,7 @@ int ttkUserInterfaceBase::run() {
+ 
+   {
+     stringstream msg;
+-    msg << "[ttkUserInterfaceBase] Running user interface!" << endl;
++    msg << "[ttkUserInterfaceBase] Running user interface!" << std::endl;
+     printMsg(msg.str());
+   }
+ 
+@@ -241,7 +241,7 @@ int ttkUserInterfaceBase::switchOutput(const int &outputId) {
+   } else {
+     msg << "on";
+   }
+-  msg << endl;
++  msg << std::endl;
+   printMsg(msg.str());
+ 
+   visibleOutputs_[outputId] = !visibleOutputs_[outputId];
+@@ -259,7 +259,7 @@ int ttkUserInterfaceBase::switchTransparency() {
+   } else {
+     msg << "on";
+   }
+-  msg << endl;
++  msg << std::endl;
+   printMsg(msg.str());
+ 
+   transparency_ = !transparency_;

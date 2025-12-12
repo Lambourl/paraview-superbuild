@@ -165,7 +165,7 @@ endif ()
 # TODO: enable embree, for now
 # there is a missing embree3/rtcore.h (windows)
 superbuild_add_project(ttk
-  DEPENDS paraview boost cxx11
+  DEPENDS paraview boost cxx11 qhull
   DEPENDS_OPTIONAL eigen numpy openmp python3 scipy zfp zlib
   LICENSE_FILES
     LICENSE
@@ -199,3 +199,8 @@ superbuild_add_project(ttk
     -DTTK_WHITELIST_MODE:BOOL=TRUE
     ${ttk_module_settings}
   )
+
+# https://github.com/topology-tool-kit/ttk/pull/1126
+# standalone/ changes stripped
+superbuild_apply_patch(ttk iostream
+  "Fix `iostream` bits")

@@ -32,6 +32,9 @@ superbuild_add_project(pdal
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
     ${pdal_zlib_include_dir})
 
+superbuild_apply_patch(pdal no-gtest
+  "Avoid downloading gtest during configure")
+
 include(CheckIncludeFileCXX)
 
 if (zlib_enabled)

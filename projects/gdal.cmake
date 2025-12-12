@@ -76,3 +76,6 @@ superbuild_add_project(gdal
 
 superbuild_apply_patch(gdal parallel-hdf5-windows
   "Link to MPI if HDF5 is parallel")
+
+superbuild_apply_patch(gdal missing-includes
+  "Add missing includes")

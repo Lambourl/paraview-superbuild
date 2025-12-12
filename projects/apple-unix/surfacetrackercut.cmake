@@ -11,3 +11,7 @@ superbuild_add_project(surfacetrackercut
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DCMAKE_INSTALL_LIBDIR:PATH=lib)
+
+# https://github.com/conniejhe/Surface-Cutting/pull/8
+superbuild_apply_patch(surfacetrackercut iostream
+  "Fix iostream `using` bits")
