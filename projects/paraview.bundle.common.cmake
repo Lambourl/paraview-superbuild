@@ -331,6 +331,21 @@ function (paraview_install_xr_manifests)
     FILES_MATCHING PATTERN "*.json")
 endfunction ()
 
+function (paraview_install_openusd_plugins)
+  cmake_parse_arguments(USD_PLUGINS "" "DESTINATION" "" ${ARGN})
+
+  if (NOT DEFINED USD_PLUGINS_DESTINATION)
+    message(FATAL_ERROR "paraview_install_openusd_plugins was called without DESTINATION")
+  endif ()
+
+  install(
+    DIRECTORY   "${superbuild_install_location}/lib/usd"
+    DESTINATION "${USD_PLUGINS_DESTINATION}"
+    COMPONENT "superbuild"
+    USE_SOURCE_PERMISSIONS
+    PATTERN "*.json")
+endfunction ()
+
 function (paraview_install_openxr_models)
   if (NOT "XRInterface" IN_LIST paraview_plugins)
     return ()

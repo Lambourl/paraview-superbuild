@@ -362,6 +362,10 @@ endif ()
 
 paraview_install_extra_data()
 
+if (openusd_enabled)
+  paraview_install_openusd_plugins(DESTINATION "${paraview_appname}/Contents/Libraries")
+endif()
+
 if (proj_enabled)
   install(
     FILES       "${superbuild_install_location}/share/proj/proj.db"
