@@ -1,0 +1,20 @@
+--- a/lib/src/Base/Common/ResourceMap.cxx
++++ b/lib/src/Base/Common/ResourceMap.cxx
+@@ -625,7 +625,7 @@ void ResourceMap::readConfigurationFile(const FileName & configurationFile)
+   } // if root
+ #else
+   (void)configurationFile;
+-  LOGWARN(OSS() << "Cannot parse configuration file due to lacking xml support");
++  //LOGWARN(OSS() << "Cannot parse configuration file due to lacking xml support");
+ #endif
+ }
+
+@@ -646,7 +646,7 @@ void ResourceMap::loadConfigurationFile()
+   }
+   catch (const FileNotFoundException &)
+   {
+-    LOGWARN(OSS() << "The configuration file has not been found, using default parameters.");
++    //LOGWARN(OSS() << "The configuration file has not been found, using default parameters.");
+   }
+ }
+
