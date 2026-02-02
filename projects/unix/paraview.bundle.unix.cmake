@@ -162,6 +162,9 @@ if (ispc_enabled AND ospray_SOURCE_SELECTION STREQUAL "2.12.0")
   list(APPEND extra_libraries
     ispcrt_device_cpu)
 endif ()
+if (openusd_enabled)
+  paraview_install_openusd_plugins(DESTINATION "lib")
+endif()
 if (openvkl_enabled)
   list(APPEND extra_libraries
     openvkl_module_cpu_device)

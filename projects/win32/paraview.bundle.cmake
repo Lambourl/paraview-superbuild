@@ -151,6 +151,9 @@ if (rkcommon_enabled)
   list(APPEND extra_library_names
     rkcommon)
 endif ()
+if (openusd_enabled)
+  paraview_install_openusd_plugins(DESTINATION "bin")
+endif()
 if (openvkl_enabled)
   list(APPEND extra_library_names
     openvkl_module_cpu_device
