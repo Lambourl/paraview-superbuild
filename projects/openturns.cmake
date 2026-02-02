@@ -58,3 +58,9 @@ superbuild_add_project(openturns
     -DUSE_PRIMESIEVE=OFF
     -DUSE_SPECTRA=OFF
 )
+
+# Patch to remove warning messages about configuration
+# files when the openturns library is loaded.
+# See https://gitlab.kitware.com/paraview/paraview/-/issues/23028
+superbuild_apply_patch(openturns suppress-config-warnings
+  "suppress config file warnings")
