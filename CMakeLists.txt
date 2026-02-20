@@ -277,8 +277,8 @@ function (superbuild_find_projects var)
   endif ()
 
   foreach (_add_sb_folder IN LISTS SUPERBUILD_ADDITIONAL_FOLDERS)
-    if (EXISTS "${SUPERBUILD_ADDITIONAL_FOLDERS}/projects.cmake")
-      include("${SUPERBUILD_ADDITIONAL_FOLDERS}/projects.cmake")
+    if (EXISTS "${_add_sb_folder}/projects.cmake")
+      include("${_add_sb_folder}/projects.cmake")
     else ()
       message(WARNING "An additional superbuild folder was specified: ${_add_sb_folder},"
              " but it does not contain in projects.cmake file. No projects have been added for this folder.")
@@ -391,12 +391,12 @@ function (superbuild_add_packaging)
   endif ()
 
   foreach (_add_sb_folder IN LISTS SUPERBUILD_ADDITIONAL_FOLDERS)
-    if (EXISTS "${SUPERBUILD_ADDITIONAL_FOLDERS}/package.cmake")
-      include("${SUPERBUILD_ADDITIONAL_FOLDERS}/package.cmake")
+    if (EXISTS "${_add_sb_folder}/package.cmake")
+      include("${_add_sb_folder}/package.cmake")
     endif ()
-    if (EXISTS "${SUPERBUILD_ADDITIONAL_FOLDERS}/bundle.cmake")
+    if (EXISTS "${_add_sb_folder}/bundle.cmake")
       list(APPEND paraview_additional_bundle_files
-        "${SUPERBUILD_ADDITIONAL_FOLDERS}/bundle.cmake")
+        "${_add_sb_folder}/bundle.cmake")
     endif ()
   endforeach()
 
