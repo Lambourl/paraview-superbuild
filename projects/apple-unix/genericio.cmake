@@ -11,3 +11,7 @@ superbuild_add_project(genericio
     -DBUILD_SHARED_LIBS:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
     -DBUILD_PROGRAMS:BOOL=OFF)
+
+# Upstream has diverged a lot since our snapshot.
+superbuild_apply_patch(genericio no-mpi-cxx
+  "Do not require MPI C++ bindings")
