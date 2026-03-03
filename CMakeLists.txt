@@ -149,6 +149,7 @@ function (superbuild_find_projects var)
     pythonpyparsing
     pythonpyprojectmetadata
     pythonpythran
+    pythonpyyaml
     pythonsemanticversion
     pythonsetuptools
     pythonsetuptoolsrust
