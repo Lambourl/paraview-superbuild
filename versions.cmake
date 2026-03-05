@@ -312,11 +312,6 @@ superbuild_set_revision(geotiff
   URL     "https://www.paraview.org/files/dependencies/libgeotiff-1.7.1.tar.gz"
   URL_MD5 22879ac6f83460605f9c39147a2ccc7a)
 
-superbuild_set_revision(proj
-  # https://github.com/OSGeo/PROJ/releases
-  URL     "https://www.paraview.org/files/dependencies/proj-9.2.1.tar.gz"
-  URL_MD5 c8e878049ef27330ac94624e1a75b0db)
-
 superbuild_set_revision(jsonc
   # https://github.com/json-c/json-c/tags
   URL     "https://www.paraview.org/files/dependencies/json-c-0.17-20230812.tar.gz"
