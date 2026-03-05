@@ -312,11 +312,6 @@ superbuild_set_revision(pdal
   URL     "https://www.paraview.org/files/dependencies/PDAL-2.9.0-src.tar.bz2"
   URL_MD5 70aa7d47780d92674586a0e5e2bb7b1b)
 
-superbuild_set_revision(xerces
-  # https://github.com/apache/xerces-c/tags
-  URL     "https://www.paraview.org/files/dependencies/xerces-c-3.2.4.tar.xz"
-  URL_MD5 63bf3c8b5a76e180fe97afeddee1d21e)
-
 superbuild_set_revision(launchers
   SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/launchers")
 
