@@ -307,11 +307,6 @@ superbuild_set_revision(protobuf
   URL     "https://www.paraview.org/files/dependencies/protobuf-24.1.tar.gz"
   URL_MD5 "95dc2473e40769cec9857e1a0826cf90")
 
-superbuild_set_revision(gdal
-  # https://github.com/OSGeo/gdal/releases
-  URL     "https://www.paraview.org/files/dependencies/gdal-3.7.1.tar.gz"
-  URL_MD5 e13a09602cefc5c91bde193a34345ef9)
-
 superbuild_set_revision(pdal
   # https://github.com/PDAL/PDAL/releases
   URL     "https://www.paraview.org/files/dependencies/PDAL-2.9.0-src.tar.bz2"
