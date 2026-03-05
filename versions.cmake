@@ -307,11 +307,6 @@ superbuild_set_revision(protobuf
   URL     "https://www.paraview.org/files/dependencies/protobuf-24.1.tar.gz"
   URL_MD5 "95dc2473e40769cec9857e1a0826cf90")
 
-superbuild_set_revision(pdal
-  # https://github.com/PDAL/PDAL/releases
-  URL     "https://www.paraview.org/files/dependencies/PDAL-2.9.0-src.tar.bz2"
-  URL_MD5 70aa7d47780d92674586a0e5e2bb7b1b)
-
 superbuild_set_revision(launchers
   SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/launchers")
 
