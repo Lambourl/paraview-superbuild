@@ -66,6 +66,15 @@ if (UNIX AND NOT APPLE)
       )
 endif ()
 
+if (APPLE)
+  superbuild_test_loadable_modules("paraview" "${generator}" "${paraview_extract_dir}"
+    MANIFEST "${CMAKE_BINARY_DIR}/cpack/paraview/DragNDrop/build/${paraview_appname}.manifest"
+    EXCLUDES
+      # Python stdlib modules: copied by fixup_bundle but rpaths not modified.
+      # These have build-tree rpaths that work in the bundle due to @loader_path.
+      "lib/python3")
+endif ()
+
 if (NOT qt5_enabled AND NOT qt6_enabled)
   set(paraview_exe)
 endif ()
