@@ -9,7 +9,7 @@
 # newer compilers.
 
 .centos8:
-    image: "kitware/paraview:ci-superbuild-centos8-20250227"
+    image: "kitware/paraview:ci-superbuild-centos8-20260306"
 
     variables:
         GIT_SUBMODULE_STRATEGY: none

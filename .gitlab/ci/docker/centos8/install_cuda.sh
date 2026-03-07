@@ -8,6 +8,7 @@ dnf config-manager --add-repo \
 
 # Install CUDA toolchains.
 dnf install -y \
-    cuda-compiler-12-6 cuda-cudart-devel-12-6 cuda-toolkit-12-6
+    cuda-compiler-12-6 cuda-cudart-devel-12-6 cuda-toolkit-12-6 \
+    nvidia-driver-cuda-libs
 
 dnf clean all
