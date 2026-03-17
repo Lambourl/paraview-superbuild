@@ -307,46 +307,6 @@ superbuild_set_revision(protobuf
   URL     "https://www.paraview.org/files/dependencies/protobuf-24.1.tar.gz"
   URL_MD5 "95dc2473e40769cec9857e1a0826cf90")
 
-superbuild_set_revision(tiff
-  # https://gitlab.com/libtiff/libtiff/-/releases
-  URL     "https://www.paraview.org/files/dependencies/tiff-4.5.1.tar.xz"
-  URL_MD5 d8b8622f93e09435737a61e574e5dd48)
-
-superbuild_set_revision(geotiff
-  # https://github.com/OSGeo/libgeotiff/releases
-  URL     "https://www.paraview.org/files/dependencies/libgeotiff-1.7.1.tar.gz"
-  URL_MD5 22879ac6f83460605f9c39147a2ccc7a)
-
-superbuild_set_revision(proj
-  # https://github.com/OSGeo/PROJ/releases
-  URL     "https://www.paraview.org/files/dependencies/proj-9.2.1.tar.gz"
-  URL_MD5 c8e878049ef27330ac94624e1a75b0db)
-
-superbuild_set_revision(jsonc
-  # https://github.com/json-c/json-c/tags
-  URL     "https://www.paraview.org/files/dependencies/json-c-0.17-20230812.tar.gz"
-  URL_MD5 6d724389b0a08c519d9dd6e2fac7efb8)
-
-superbuild_set_revision(gdal
-  # https://github.com/OSGeo/gdal/releases
-  URL     "https://www.paraview.org/files/dependencies/gdal-3.7.1.tar.gz"
-  URL_MD5 e13a09602cefc5c91bde193a34345ef9)
-
-superbuild_set_revision(pdal
-  # https://github.com/PDAL/PDAL/releases
-  URL     "https://www.paraview.org/files/dependencies/PDAL-2.9.0-src.tar.bz2"
-  URL_MD5 70aa7d47780d92674586a0e5e2bb7b1b)
-
-superbuild_set_revision(xerces
-  # https://github.com/apache/xerces-c/tags
-  URL     "https://www.paraview.org/files/dependencies/xerces-c-3.2.4.tar.xz"
-  URL_MD5 63bf3c8b5a76e180fe97afeddee1d21e)
-
-superbuild_set_revision(curl
-  # https://github.com/curl/curl/releases
-  URL     "https://www.paraview.org/files/dependencies/curl-8.8.0.tar.xz"
-  URL_MD5 e1062de8a9b252a75fc42e2252746bd8)
-
 superbuild_set_revision(launchers
   SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/launchers")
 
