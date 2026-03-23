@@ -17,7 +17,7 @@ endif()
 superbuild_add_project(adios2
   CAN_USE_SYSTEM
   DEPENDS
-    cxx14 ${adios2_extra_deps}
+    cxx17 ${adios2_extra_deps}
     # currently adios 2.6 unconditionally needs Python
     # even if Python wrapping is disabled.
     python3
