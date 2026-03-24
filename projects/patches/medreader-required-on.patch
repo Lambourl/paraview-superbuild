@@ -1,0 +1,25 @@
+From 7ade988071020c41b1304e0c82b222b88d5fd6ff Mon Sep 17 00:00:00 2001
+From: Mathieu Westphal <mathieu.westphal@kitware.com>
+Date: Tue, 24 Mar 2026 16:03:45 +0100
+Subject: [PATCH] MEDReader required on
+
+---
+ plugin/ParaViewPlugin/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/plugin/ParaViewPlugin/CMakeLists.txt b/plugin/ParaViewPlugin/CMakeLists.txt
+index e4f9922..55c8dca 100644
+--- a/plugin/ParaViewPlugin/CMakeLists.txt
++++ b/plugin/ParaViewPlugin/CMakeLists.txt
+@@ -112,6 +112,8 @@ if(PARAVIEW_USE_QT)
+ endif(PARAVIEW_USE_QT)
+ 
+ paraview_add_plugin(MEDReader
++  REQUIRED_ON_CLIENT
++  REQUIRED_ON_SERVER
+   VERSION "5.0"
+   UI_INTERFACES ${interfaces}
+   UI_FILES ${ui_files}
+-- 
+2.53.0
+
