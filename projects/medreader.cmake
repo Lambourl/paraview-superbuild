@@ -48,3 +48,7 @@ superbuild_apply_patch(medreader pqTreeWidget-margins-api
 # https://github.com/SalomePlatform/medreader/pull/2
 superbuild_apply_patch(medreader iostream
   "Fix `iostream` bits")
+
+# https://github.com/SalomePlatform/medreader/pull/3
+superbuild_apply_patch(medreader required-on
+  "Ensure MEDReader plugin is loaded on client and server")
