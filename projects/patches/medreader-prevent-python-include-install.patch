@@ -1,0 +1,32 @@
+From 5e09c17372e455aca4ead43ce6eeb7a032820080 Mon Sep 17 00:00:00 2001
+From: Mathieu Westphal <mathieu.westphal@kitware.com>
+Date: Thu, 2 Apr 2026 14:47:14 +0200
+Subject: [PATCH] wrapping: prevent faulty installation of Python.h
+
+---
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 96c915e..cdfbf24 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -62,13 +62,13 @@ if(TARGET VTK::Python)
+   vtk_module_wrap_python(
+     MODULES         MEDReaderIO
+     WRAPPED_MODULES medr_wrapped_modules
+-    TARGET          MEDREADER::Python
++    TARGET          MEDREADER::WrappablePython
+     INSTALL_EXPORT  MEDReaderVTKPython
+     PYTHON_PACKAGE  "MEDReaderVTK"
+     MODULE_DESTINATION  "${python_destination}"
+     CMAKE_DESTINATION   "${CMAKE_INSTALL_LIBDIR}/cmake/MEDReaderVTKPython"
+     LIBRARY_DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+-    INSTALL_HEADERS ON
++    INSTALL_HEADERS OFF
+     BUILD_STATIC    OFF)
+ 
+   # Generate __init__.py
+-- 
+2.53.0
+

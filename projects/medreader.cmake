@@ -52,3 +52,7 @@ superbuild_apply_patch(medreader iostream
 # https://github.com/SalomePlatform/medreader/pull/3
 superbuild_apply_patch(medreader required-on
   "Ensure MEDReader plugin is loaded on client and server")
+
+# https://github.com/SalomePlatform/medreader/pull/4
+superbuild_apply_patch(medreader prevent-python-include-install
+  "Prevent installation of faulty Python.h")
