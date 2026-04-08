@@ -332,8 +332,8 @@ superbuild_set_revision(openusd
 
 superbuild_set_revision(openvdb
   # https://github.com/AcademySoftwareFoundation/openvdb/releases
-  URL "https://www.paraview.org/files/dependencies/openvdb-10.0.1.tar.gz"
-  URL_MD5 0239ff0c912a3eac76bd6a4ae1b03522)
+  URL "https://www.paraview.org/files/dependencies/openvdb-11.0.0.tar.gz"
+  URL_MD5 025f4fc4db58419341a4991f1a16174a)
 
 superbuild_set_selectable_source(catalyst
   SELECT git CUSTOMIZABLE DEFAULT
