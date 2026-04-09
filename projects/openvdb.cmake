@@ -31,3 +31,7 @@ superbuild_add_extra_cmake_args(
 
 superbuild_apply_patch(openvdb tbb-disable-autolink
   "Disable TBB autolinking")
+
+
+# backport some fixes from 13.0.0: https://github.com/AcademySoftwareFoundation/openvdb/commit/930c3acb8e0c7c2f1373f3a70dc197f5d04dfe74
+superbuild_apply_patch(openvdb v13-backports "Backport fixes from OpenVDB 13.0.0")
